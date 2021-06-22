@@ -1,1 +1,1 @@
-# Macrame Vue 3 Adapter
+# Macrame.js React Adapter
