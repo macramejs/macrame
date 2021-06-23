@@ -1,29 +1,29 @@
 import { resolveComponent, ref, h, reactive } from "vue";
-import { TIndexSearch, TIndexTable, TIndexPagination, TuseIndex } from "../.."; 
+import { TIndexSearch, TIndexTable, TIndexPagination, TuseIndex } from "../..";
 const debounce = require('lodash.debounce');
 
-export const IndexSearch : TIndexSearch = function({ searchComponent }, { attrs }) {
+export const IndexSearch: TIndexSearch = function ({ searchComponent }, { attrs }) {
     return h(resolveComponent(searchComponent.name), {
         ...attrs,
         ...searchComponent.props,
     });
 }
 
-export const IndexTable : TIndexTable = function({ tableComponent }, { attrs }) {
+export const IndexTable: TIndexTable = function ({ tableComponent }, { attrs }) {
     return h(resolveComponent(tableComponent.name), {
         ...attrs,
         ...tableComponent.props,
     });
 }
 
-export const IndexPagination : TIndexPagination = function({ paginationComponent }, { attrs }) {
+export const IndexPagination: TIndexPagination = function ({ paginationComponent }, { attrs }) {
     return h(resolveComponent(paginationComponent.name), {
         ...attrs,
         ...paginationComponent.props,
     });
 }
 
-const useIndex : TuseIndex = function useIndex({ route, syncUrl = false, defaultPerPage = 10 }) {
+const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultPerPage = 10 }) {
     let index = reactive({
         busy: false,
         perPage: defaultPerPage,
@@ -38,6 +38,7 @@ const useIndex : TuseIndex = function useIndex({ route, syncUrl = false, default
         totalItems: 0,
         loadItems() {
             this.busy = true;
+
             fetch(this.__getUrl())
                 .then(response => response.json())
                 .then(this.__update)
@@ -58,32 +59,32 @@ const useIndex : TuseIndex = function useIndex({ route, syncUrl = false, default
             return Math.ceil(this.totalItems / this.perPage);
         },
         setPage(newPage) {
-            if(this.newPage < 1 || this.newPage > this.getLastPage()) {
+            if (this.newPage < 1 || this.newPage > this.getLastPage()) {
                 return;
             }
-    
+
             this.currentPage = newPage;
-    
+
             this.reload();
         },
         nextPage() {
-            this.setPage(this.currentPage+1);
+            this.setPage(this.currentPage + 1);
         },
-    
+
         prevPage() {
-            this.setPage(this.currentPage-1);
+            this.setPage(this.currentPage - 1);
         },
 
         lastPage() {
             this.setPage(this.getLastPage());
         },
         updateSearch: debounce((e) => {
-            if(e instanceof Event) {
+            if (e instanceof Event) {
                 this.search = (<HTMLTextAreaElement>e.target).value;
             } else {
                 this.search = e;
             }
-            
+
             this.reload();
         }, 500),
         __update(data) {
@@ -94,7 +95,7 @@ const useIndex : TuseIndex = function useIndex({ route, syncUrl = false, default
             this.perPage = data.meta.per_page;
             this.hasNextPage = this.currentPage < this.getLastPage();
             this.hasPrevPage = this.currentPage > 1;
-    
+
             this.busy = false;
         },
         __getUrl() {
@@ -102,11 +103,11 @@ const useIndex : TuseIndex = function useIndex({ route, syncUrl = false, default
                 `page=${this.currentPage}`,
                 `search=${encodeURIComponent(this.search)}`
             ];
-    
-            for(let i=0;i<this.filters.length;i++) {
+
+            for (let i = 0; i < this.filters.length; i++) {
                 params.push(`fitlers[]=${encodeURIComponent(this.filters[i])}`);
             }
-    
+
             return `${route}?${params.join('&')}`;
         }
     });
