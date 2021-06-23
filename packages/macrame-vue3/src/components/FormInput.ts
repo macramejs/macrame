@@ -7,10 +7,7 @@ const FormInput : TFormInput = function({ form, attribute, inputComponent }) {
     return h(Input, {
         ...inputComponent.props,
         modelValue: form[attribute],
-        'onUpdate:modelValue': (value) => {
-            form[attribute] = value;
-            console.log(value, form[attribute]);
-        },
+        'onUpdate:modelValue': (value) => form[attribute] = value,
     });
 }
 
