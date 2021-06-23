@@ -8,8 +8,6 @@ export const Select : TSelect = function({ options }, { attrs, emit, slots }) {
         children.push(h('option', { value }, options[value]));
     }
 
-    console.log(children, options);
-
     return h(`select`, {
         value: attrs.modelValue,
         onInput: ({ target }) => emit('update:modelValue', target.value),

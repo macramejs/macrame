@@ -24,9 +24,9 @@ const Component : TComponent = function(props) {
     let passthru = pickBy(props, (value, key) => {
         return !['name', 'key', 'props'].includes(key);
     });
-
+    
     return (
-        <Component {...passthru} {...props} />
+        <Component {...passthru} {...props.props} />
     );
 };
 

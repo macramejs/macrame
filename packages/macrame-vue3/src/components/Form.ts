@@ -1,6 +1,7 @@
 import { h, reactive, resolveComponent } from 'vue';
 import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
 import { TForm, TuseForm } from '../..';
+import pickBy from 'lodash.pickby';
 
 export const Form : TForm = function({ schema, form }) {
     let children = [];
@@ -21,14 +22,9 @@ export const Form : TForm = function({ schema, form }) {
 }
 
 const useForm : TuseForm = function({ model, attributes, route, store }) {
-    let data = Object.keys(model)
-        .filter((key) => attributes.includes(key))
-        .reduce((obj, key) => {
-            obj[key] = model[key];
-            return obj;
-        }, {});
-
-    const inertiaForm = useInertiaForm(data);
+    const inertiaForm = useInertiaForm(
+        pickBy(model, (value, key) => attributes.includes(key))
+    );
 
     let form = reactive({
         ...inertiaForm,

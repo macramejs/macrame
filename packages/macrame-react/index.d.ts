@@ -2,7 +2,7 @@ import * as Macrame from '@macramejs/macrame'
 import { FunctionComponent, Component as ReactComponent } from 'react'
 import { InertiaFormProps } from '@inertiajs/inertia-react';
 
-type Data = Record<string, undefined>;
+type Data = Record<string, any|undefined>;
 type Model = Record<string, any>;
 
 type TaddComponent = (name: string, component: FunctionComponent | ReactComponent) => void;
@@ -20,9 +20,14 @@ type ReactComponentProps = Macrame.Component & {
 type TComponent = FunctionComponent<ReactComponentProps>;
 export const Component : TComponent;
 
-type TMacrameForm<TItem = Model> = InertiaFormProps<TItem> & {
-    submit(e: Event | any): void
-}
+type TMacrameForm<TItem = Model> =  {
+    submit(e: Event | any): void,
+    get: undefined,
+    post: undefined,
+    put: undefined,
+    patch: undefined,
+    delete: undefined,
+} & InertiaFormProps<TItem>
 
 type TuseForm<TItem = Model> = (props: Macrame.UseFormProps) => TMacrameForm<TItem>;
 export const useForm : TuseForm;
@@ -72,6 +77,9 @@ export const IndexPagination : TIndexPagination;
 type TFormInput = FunctionComponent<Macrame.FormInputProps<InertiaFormProps<Record<string, any>>>>;
 export const FormInput : TFormInput;
 
+type TFormSelect = FunctionComponent<Macrame.FormSelectProps<InertiaFormProps<Record<string, any>>>>;
+export const FormSelect : TFormSelect;
+
 type TFormTextarea = FunctionComponent<Macrame.FormTextareatProps<InertiaFormProps<Record<string, any>>>>;
 export const FormTextarea : TFormTextarea;
 
@@ -87,8 +95,8 @@ export const Th : TTh;
 type TTextarea = FunctionComponent<Data>;
 export const Textarea : TTextarea;
 
-type TInput = FunctionComponent<Data>;
-export const Input : TInput;
+type TSelect = FunctionComponent<Data>;
+export const Select : TSelect;
 
 type TCheckbox = FunctionComponent<Data>;
 export const Checkbox : TCheckbox;
