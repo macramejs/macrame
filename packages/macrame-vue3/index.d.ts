@@ -2,7 +2,7 @@ import * as Macrame from '@macramejs/macrame'
 import { DefineComponent, FunctionalComponent, Plugin } from 'vue'
 import { InertiaForm } from '@inertiajs/inertia-vue3';
 
-type Data = Record<string, undefined>;
+type Data = Record<string, any|undefined>;
 type Model = Record<string, any>;
 
 export const plugin: Plugin;
@@ -64,6 +64,9 @@ export const IndexPagination : TIndexPagination;
 type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
 export const FormInput : TFormInput;
 
+type TFormSelect = FunctionalComponent<Macrame.FormSelectProps<InertiaForm<Record<string, any>>>>;
+export const FormSelect : TFormSelect;
+
 type TFormTextarea = FunctionalComponent<Macrame.FormTextareatProps<InertiaForm<Record<string, any>>>>;
 export const FormTextarea : TFormTextarea;
 
@@ -81,6 +84,9 @@ export const Textarea : TTextarea;
 
 type TInput = FunctionalComponent<Data>;
 export const Input : TInput;
+
+type TSelect = FunctionalComponent<Data>;
+export const Select : TSelect;
 
 type TCheckbox = FunctionalComponent<Data>;
 export const Checkbox : TCheckbox;

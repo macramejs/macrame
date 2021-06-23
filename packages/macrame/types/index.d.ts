@@ -44,6 +44,12 @@ export declare interface FormInputProps<TForm> {
     inputComponent: Component
 }
 
+export declare interface FormSelectProps<TForm> {
+    form: TForm,
+    attribute: string,
+    selectComponent: Component
+}
+
 export declare interface FormTextareatProps<TForm> {
     form: TForm,
     attribute: string,
