@@ -4,8 +4,14 @@ import { TForm, TuseForm } from '../..';
 import * as pickBy from 'lodash.pickby';
 
 export const Form: TForm = ({ schema, form }) => {
+
+    let update = (e) => {
+        e.preventDefault();
+        form.submit(e);
+    }
+
     return (
-        <form onSubmit={(e) => form.submit(e)}>
+        <form onSubmit={update}>
             {schema.map((component, i) => (
                 <Component
                     props={component.props}
@@ -14,7 +20,7 @@ export const Form: TForm = ({ schema, form }) => {
                     form={form}
                 />
             ))}
-            <button onClick={(e) => form.submit(e)}>Save</button>
+            <button onClick={update}>Save</button>
         </form>
     );
 };
