@@ -16,7 +16,7 @@ export const Form : TForm = function({ schema, form }) {
     }
 
     return h(`form`, {
-        submit: form.submit
+        onSubmit: (e) => form.submit(e)
     }, children);
 }
 
@@ -28,19 +28,23 @@ const useForm : TuseForm = function({ model, attributes, route, store }) {
             return obj;
         }, {});
 
+    const inertiaForm = useInertiaForm(data);
+
     let form = reactive({
-        ...useInertiaForm(data),
+        ...inertiaForm,
         submit(e) {
             if(e instanceof Event) {
                 e.preventDefault();
             }
-            form.put(route);
+
+            this.__submit(store ? 'post' : 'put', route);
         },
         get: undefined,
         post: undefined,
         put: undefined,
         patch: undefined,
         delete: undefined,
+        __submit: inertiaForm.submit
     });
 
     return form;
