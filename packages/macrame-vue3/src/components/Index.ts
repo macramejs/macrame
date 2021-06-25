@@ -1,26 +1,27 @@
 import { resolveComponent, ref, h, reactive } from "vue";
 import { TIndexSearch, TIndexTable, TIndexPagination, TuseIndex } from "../..";
+import { Component } from "@macramejs/macrame";
 const debounce = require('lodash.debounce');
 
-export const IndexSearch: TIndexSearch = function ({ searchComponent }, { attrs }) {
-    return h(resolveComponent(searchComponent.name), {
+export const IndexSearch: TIndexSearch = function ({ hasSearch, table, as = 'ui-input' }, { attrs }) {
+    if(! hasSearch) {
+        return;
+    }
+
+    return h(resolveComponent(as), {
         ...attrs,
-        ...searchComponent.props,
+        table,
+        modelValue: table.search,
+        'onUpdate:modelValue': debounce((e) => table.updateSearch(e), 200)
     });
 }
 
-export const IndexTable: TIndexTable = function ({ tableComponent }, { attrs }) {
-    return h(resolveComponent(tableComponent.name), {
-        ...attrs,
-        ...tableComponent.props,
-    });
+export const IndexTable: TIndexTable = function ({ as = 'ui-table' }, { attrs }) {
+    return h(resolveComponent(as), { ...attrs });
 }
 
-export const IndexPagination: TIndexPagination = function ({ paginationComponent }, { attrs }) {
-    return h(resolveComponent(paginationComponent.name), {
-        ...attrs,
-        ...paginationComponent.props,
-    });
+export const IndexPagination: TIndexPagination = function ({ as = 'ui-pagination' }, { attrs }) {
+    return h(resolveComponent(as), { ...attrs });
 }
 
 const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultPerPage = 10 }) {
@@ -41,7 +42,7 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
 
             fetch(this.__getUrl())
                 .then(response => response.json())
-                .then(this.__update)
+                .then((data) => this.__update(data))
                 .catch(() => this.busy = false);
         },
         reload() {
@@ -78,15 +79,15 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
         lastPage() {
             this.setPage(this.getLastPage());
         },
-        updateSearch: debounce((e) => {
-            if (e instanceof Event) {
+        updateSearch(e) {
+            if(e instanceof Event) {
                 this.search = (<HTMLTextAreaElement>e.target).value;
             } else {
                 this.search = e;
             }
 
-            this.reload();
-        }, 500),
+            this.setPage(1);
+        },
         __update(data) {
             this.items = data.data;
             this.totalItems = data.meta.total;

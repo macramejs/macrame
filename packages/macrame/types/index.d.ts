@@ -27,15 +27,16 @@ export declare interface UseIndexProps {
 type UseIndexAttrs = Record<keyof UseIndexProps, any>;
 
 export declare type IndexSearchProps = {
-    searchComponent: Component
+    as: string,
+    hasSearch: boolean
 }
 
 export declare interface IndexTableProps {
-    tableComponent: Component
+    as: string,
 }
 
 export declare interface IndexPaginationProps {
-    paginationComponent: Component
+    as: string,
 }
 
 export declare interface FormInputProps<TForm> {
