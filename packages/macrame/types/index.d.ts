@@ -2,7 +2,7 @@ type Model = Record<string, any>;
 
 export declare interface Component {
     name: string,
-    props: Record<string, any>
+    props?: Record<string, any>
 }
 
 export declare interface UseFormProps {

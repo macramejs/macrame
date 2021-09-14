@@ -3,7 +3,7 @@ import { TIndexSearch, TIndexTable, TIndexPagination, TuseIndex } from "../..";
 import { Component } from "@macramejs/macrame";
 const debounce = require('lodash.debounce');
 
-export const IndexSearch: TIndexSearch = function ({ hasSearch, table, as = 'ui-input' }, { attrs }) {
+export const IndexSearch: TIndexSearch = function ({ table, hasSearch = true, as = 'ui-input' }, { attrs }) {
     if(! hasSearch) {
         return;
     }

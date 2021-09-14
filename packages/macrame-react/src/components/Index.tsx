@@ -4,31 +4,28 @@ import debounce from 'lodash.debounce';
 import { TIndexTable, TIndexSearch, TIndexPagination, TuseIndex } from '../..';
 import { Model } from '@macramejs/macrame';
 
-export const IndexSearch : TIndexSearch = function({ searchComponent, ...props }) {
+export const IndexSearch : TIndexSearch = function({ as, ...props }) {
     return (
         <Component
-            name={searchComponent.name}
-            props={searchComponent.props}
+            name={as}
             {...props}
         />
     );
 }
 
-export const IndexTable : TIndexTable = function({ tableComponent, ...props }) {
+export const IndexTable : TIndexTable = function({ as, ...props }) {
     return (
         <Component
-            name={tableComponent.name}
-            props={tableComponent.props}
+            name={as}
             {...props}
         />
     );
 }
 
-export const IndexPagination : TIndexPagination = function({ paginationComponent, ...props }) {
+export const IndexPagination : TIndexPagination = function({ as, ...props }) {
     return (
         <Component
-            name={paginationComponent.name}
-            props={paginationComponent.props}
+            name={as}
             {...props}
         />
     );
