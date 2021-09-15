@@ -1,5 +1,5 @@
 import * as Macrame from '@macramejs/macrame'
-import { DefineComponent, FunctionalComponent, Plugin } from 'vue'
+import { DefineComponent, FunctionalComponent, Plugin, Ref } from 'vue'
 import { InertiaForm } from '@inertiajs/inertia-vue3';
 
 type Data = Record<string, any|undefined>;
@@ -45,21 +45,11 @@ interface Index<TItem = any> {
     nextPage: () => void,
     prevPage: () => void,
     lastPage: () => void,
-    updateSearch: (e: string | object) => void
+    getLastPage: () => number,
+    updateSearch: (e: string | object) => void,
 }
 type TuseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
 export const useIndex : TuseIndex;
-
-type TIndexSearch = FunctionalComponent<Macrame.IndexSearchProps & {
-    table: Index
-}>;
-export const IndexSearch : TIndexSearch;
-
-type TIndexTable = FunctionalComponent<Macrame.IndexTableProps>;
-export const IndexTable : TIndexTable;
-
-type TIndexPagination = FunctionalComponent<Macrame.IndexPaginationProps>
-export const IndexPagination : TIndexPagination;
 
 type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
 export const FormInput : TFormInput;

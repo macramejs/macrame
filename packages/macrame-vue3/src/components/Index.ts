@@ -1,30 +1,9 @@
-import { resolveComponent, ref, h, reactive } from "vue";
-import { TIndexSearch, TIndexTable, TIndexPagination, TuseIndex } from "../..";
-import { Component } from "@macramejs/macrame";
-const debounce = require('lodash.debounce');
-
-export const IndexSearch: TIndexSearch = function ({ table, hasSearch = true, as = 'ui-input' }, { attrs }) {
-    if(! hasSearch) {
-        return;
-    }
-
-    return h(resolveComponent(as), {
-        ...attrs,
-        table,
-        modelValue: table.search,
-        'onUpdate:modelValue': debounce((e) => table.updateSearch(e), 200)
-    });
-}
-
-export const IndexTable: TIndexTable = function ({ as = 'ui-table' }, { attrs }) {
-    return h(resolveComponent(as), { ...attrs });
-}
-
-export const IndexPagination: TIndexPagination = function ({ as = 'ui-pagination' }, { attrs }) {
-    return h(resolveComponent(as), { ...attrs });
-}
+import { ref, reactive, watch } from "vue";
+import { TuseIndex } from "../..";
 
 const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultPerPage = 10 }) {
+    const search = ref<string>("");
+
     let index = reactive({
         busy: false,
         perPage: defaultPerPage,
@@ -33,10 +12,11 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
         hasPrevPage: false,
         currentPage: 1,
         filters: [],
-        search: "",
+        search: search,
         fromItem: 0,
         toItem: 0,
         totalItems: 0,
+        __route: route,
         loadItems() {
             this.busy = true;
 
@@ -80,6 +60,7 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
             this.setPage(this.getLastPage());
         },
         updateSearch(e) {
+            console.log({e});
             if(e instanceof Event) {
                 this.search = (<HTMLTextAreaElement>e.target).value;
             } else {
@@ -106,11 +87,15 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
             ];
 
             for (let i = 0; i < this.filters.length; i++) {
-                params.push(`fitlers[]=${encodeURIComponent(this.filters[i])}`);
+                params.push(`filters[]=${encodeURIComponent(this.filters[i])}`);
             }
 
-            return `${route}?${params.join('&')}`;
+            return `${this.__route}?${params.join('&')}`;
         }
+    });
+
+    watch(search, () => {
+        index.reload();
     });
 
     return index;
