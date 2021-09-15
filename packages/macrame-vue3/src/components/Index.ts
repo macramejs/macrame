@@ -1,7 +1,7 @@
 import { ref, reactive, watch } from "vue";
 import { TuseIndex } from "../..";
 
-const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultPerPage = 10 }) {
+const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultPerPage = 10, filters = {}, transformFilters }) {
     const search = ref<string>("");
 
     let index = reactive({
@@ -11,12 +11,12 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
         hasNextPage: false,
         hasPrevPage: false,
         currentPage: 1,
-        filters: [],
         search: search,
         fromItem: 0,
         toItem: 0,
         totalItems: 0,
         __route: route,
+        filters: reactive(filters),
         loadItems() {
             this.busy = true;
 
@@ -86,8 +86,18 @@ const useIndex: TuseIndex = function useIndex({ route, syncUrl = false, defaultP
                 `search=${encodeURIComponent(this.search)}`
             ];
 
-            for (let i = 0; i < this.filters.length; i++) {
-                params.push(`filters[]=${encodeURIComponent(this.filters[i])}`);
+            let filters = JSON.parse(JSON.stringify(this.filters));
+
+            if(transformFilters) {
+                filters = transformFilters(filters);
+            }
+
+            for(let key in filters) {
+                if(!filters[key]) {
+                    continue;
+                }
+
+                params.push(`filter.${key}=${encodeURIComponent(filters[key])}`);
             }
 
             return `${this.__route}?${params.join('&')}`;

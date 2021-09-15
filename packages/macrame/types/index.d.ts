@@ -22,6 +22,8 @@ export declare interface UseIndexProps {
     route: string,
     syncUrl: boolean,
     defaultPerPage: number,
+    filters?: { [x: string]: any },
+    transformFilters?: (filters: { [x: string]: any }) => { [x: string]: any }
 }
 
 type UseIndexAttrs = Record<keyof UseIndexProps, any>;

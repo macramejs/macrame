@@ -32,11 +32,11 @@ interface Index<TItem = any> {
     hasNextPage: boolean,
     hasPrevPage: boolean,
     currentPage: number,
-    filters: any[],
     search: string,
     fromItem: number,
     toItem: number,
     totalItems: number,
+    filters: any,
     reload: () => void
     loadItems: () => void,
     addFilter: (filter: string) => void,
@@ -49,7 +49,8 @@ interface Index<TItem = any> {
     updateSearch: (e: string | object) => void,
 }
 type TuseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
-export const useIndex : TuseIndex;
+
+export declare function useIndex<TItem = Model>(props: Macrame.UseIndexProps): Index<TItem>;
 
 type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
 export const FormInput : TFormInput;
