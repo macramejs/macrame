@@ -1,30 +1,31 @@
 {
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "version": "0.0.7",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build-vue3",
-    "build-main": "rollup -c",
-    "build-vue3": "rollup -c --environment TARGET:macrame-vue3",
-    "build-react": "rollup -c",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "release": "node scripts/release.js"
-  },
-  "author": "Lennart Carstens-Behrens",
-  "devDependencies": {
-    "@rollup/plugin-replace": "^3.0.0",
-    "chalk": "^4.1.2",
-    "conventional-changelog-cli": "^2.1.1",
-    "enquirer": "^2.3.6",
-    "execa": "^5.1.1",
-    "minimist": "^1.2.5",
-    "rollup": "^2.58.0",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.30.0",
-    "semver": "^6.3.0"
-  }
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "version": "0.0.7",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "npm run build-vue3",
+        "build-main": "rollup -c",
+        "build-vue3": "rollup -c --environment TARGET:macrame-vue3",
+        "build-react": "rollup -c",
+        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+        "release": "node scripts/release.js",
+        "prepublishOnly": "yarn build"
+    },
+    "author": "Lennart Carstens-Behrens",
+    "devDependencies": {
+        "@rollup/plugin-replace": "^3.0.0",
+        "chalk": "^4.1.2",
+        "conventional-changelog-cli": "^2.1.1",
+        "enquirer": "^2.3.6",
+        "execa": "^5.1.1",
+        "minimist": "^1.2.5",
+        "rollup": "^2.58.0",
+        "rollup-plugin-babel": "^4.4.0",
+        "rollup-plugin-terser": "^7.0.2",
+        "rollup-plugin-typescript2": "^0.30.0",
+        "semver": "^6.3.0"
+    }
 }
