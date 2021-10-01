@@ -1,6 +1,6 @@
 {
   "name": "@macramejs/macrame",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "source": "src/index.js",
   "main": "src/index.js",
