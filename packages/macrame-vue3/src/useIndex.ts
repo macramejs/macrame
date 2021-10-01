@@ -1,5 +1,5 @@
 import { ref, reactive, watch } from "vue";
-import { UseIndex } from "..";
+import { UseIndex } from "../index";
 
 const useIndex: UseIndex = function useIndex({ 
     route, 
