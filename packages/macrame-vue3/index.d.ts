@@ -16,7 +16,7 @@ type TMacrameForm<TItem = Model> =  {
     delete: undefined,
 } & InertiaForm<TItem>
 
-type TuseForm<TItem = Model> = (props: Macrame.UseFormProps) => TMacrameForm<TItem>;
+type TuseForm<TItem = Model> = (route: string, model: Record<string, any>, options: Macrame.UseFormOptions) => TMacrameForm<TItem>;
 export const useForm : TuseForm;
 
 type TFormProps = Macrame.FormProps & {

@@ -5,14 +5,12 @@ export declare interface Component {
     props?: Record<string, any>
 }
 
-export declare interface UseFormProps {
-    model: Record<string, any>, 
+export declare interface UseFormOptions {
     attributes: string[], 
-    route: string, 
     store: boolean
 }
 
-type UseFormAttrs = Record<keyof UseFormProps, any>;
+type UseFormAttrs = Record<keyof UseFormOptions, any>;
 
 export declare interface FormProps {
     schema: Component[],

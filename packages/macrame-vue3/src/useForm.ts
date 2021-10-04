@@ -3,7 +3,7 @@ import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
 import { TForm, TuseForm } from '../index';
 const pickBy = require('lodash.pickby').default;
 
-const useForm : TuseForm = function({ model, attributes, route, store }) {
+const useForm : TuseForm = function(route, model, { attributes, store }) {
     const inertiaForm = useInertiaForm(
         pickBy(model, (value, key) => attributes.includes(key))
     );
