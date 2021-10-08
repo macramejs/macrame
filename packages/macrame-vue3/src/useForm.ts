@@ -2,7 +2,7 @@ import { h, reactive, resolveComponent } from 'vue';
 import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
 import { TForm, TuseForm } from '../index';
 
-const useForm : TuseForm = function(route, model, { attributes, store }) {
+const useForm : TuseForm = function(route, model, { method = 'put' }) {
     const inertiaForm = useInertiaForm(model);
 
     let form = reactive({
@@ -12,7 +12,7 @@ const useForm : TuseForm = function(route, model, { attributes, store }) {
                 e.preventDefault();
             }
 
-            this.__submit(store ? 'post' : 'put', route);
+            this.__submit(method, route);
         },
         get: undefined,
         post: undefined,
