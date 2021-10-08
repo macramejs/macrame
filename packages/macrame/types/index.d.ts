@@ -6,7 +6,7 @@ export declare interface Component {
 }
 
 export declare interface UseFormOptions {
-    method?: boolean
+    method?: string
 }
 
 type UseFormAttrs = Record<keyof UseFormOptions, any>;
