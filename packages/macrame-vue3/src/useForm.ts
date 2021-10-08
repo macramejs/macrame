@@ -23,6 +23,7 @@ const useForm : TuseForm = function(route, model, {
             }
 
             this.__submit(method, route, {
+                headers: { Accept: 'application/json' },
                 onCancelToken, 
                 onBefore, 
                 onStart, 
