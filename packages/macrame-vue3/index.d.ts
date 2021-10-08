@@ -1,6 +1,6 @@
 import * as Macrame from '@macramejs/macrame'
 import { FunctionalComponent, Plugin, WatchSource, Ref } from 'vue'
-import { InertiaForm } from '@inertiajs/inertia-vue3';
+import { InertiaForm, VisitOptions } from '@inertiajs/inertia-vue3';
 
 type Data = Record<string, any|undefined>;
 type Model = Record<string, any>;
@@ -16,7 +16,9 @@ type TMacrameForm<TItem> =  {
     delete: undefined,
 } & InertiaForm<TItem>
 
-type TuseForm<TItem = Model> = (route: string, model: TItem, options?: Macrame.UseFormOptions) => TMacrameForm<TItem>;
+type UseFormOptions = Macrame.UseFormOptions | Partial<VisitOptions>;
+
+type TuseForm<TItem = Model> = (route: string, model: TItem, options?: UseFormOptions) => TMacrameForm<TItem>;
 export declare function useForm<TItem = Model>(route: string | Ref<string>, model: TItem, options?: Macrame.UseFormOptions) : TMacrameForm<TItem>;
 
 type TFormProps = Macrame.FormProps & {
