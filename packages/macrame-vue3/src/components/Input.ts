@@ -2,7 +2,7 @@ import { h } from 'vue';
 import { TInput } from '../../index';
 const debounce = require('lodash.debounce');
 
-export const Input : TInput = function({ modelModifiers = {} }, { attrs, emit }) {
+export const Input : TInput = function({ modelModifiers = {} }, { attrs = {}, emit }) {
     let onInput = ({ target }) => {
         emit('update:modelValue', target.value);
     }
@@ -12,6 +12,7 @@ export const Input : TInput = function({ modelModifiers = {} }, { attrs, emit })
     }
 
     return h(`input`, {
+        ...attrs,
         value: attrs.modelValue,
         onInput,
     });
