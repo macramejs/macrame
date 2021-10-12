@@ -12,7 +12,7 @@ const useForm : TuseForm = function(route, model, {
     onCancel = () => {},
     onSuccess = () => {},
     onError = () => {},
-}) {
+} = {}) {
     const inertiaForm = useInertiaForm(model);
 
     let form = reactive({
