@@ -22,9 +22,17 @@ const useIndex: UseIndex = function useIndex({
         toItem: 0,
         totalItems: 0,
         __route: route,
+        __hooks: {
+            beforeUpdate: [],
+            afterUpdate: [],
+        },
         filters: reactive(filters),
         loadItems() {
             this.processing = true;
+
+            for(let i in this.__hooks.beforeUpdate) {
+                this.__hooks.beforeUpdate[i](this);
+            }
 
             fetch(this.__getUrl())
                 .then(response => response.json())
@@ -78,6 +86,12 @@ const useIndex: UseIndex = function useIndex({
 
             this.setPage(1);
         },
+        beforeUpdate(cb) {
+            this.__hooks.beforeUpdate.push(cb)
+        },
+        onUpdate(cb) {
+            this.__hooks.afterUpdate.push(cb)
+        },
         __update(data) {
             this.items = data.data;
             this.totalItems = data.meta.total;
@@ -89,9 +103,11 @@ const useIndex: UseIndex = function useIndex({
 
             this.processing = false;
 
-            console.log(this);
-
             this.__syncUrl();
+
+            for(let i in this.__hooks.afterUpdate) {
+                this.__hooks.afterUpdate[i](this);
+            }
         },
         __syncUrl() {
             if(! syncUrl) {
