@@ -56,6 +56,8 @@ interface Index<TItem = any> {
     lastPage: () => void,
     getLastPage: () => number,
     updateSearch: (e: string | object) => void,
+    onUpdate: (cb: CallableFunction) => void,
+    beforeUpdate: (cb: CallableFunction) => void,
 }
 
 type UseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;

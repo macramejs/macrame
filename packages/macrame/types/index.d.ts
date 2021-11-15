@@ -19,6 +19,7 @@ export declare interface UseIndexProps {
     route: string,
     syncUrl: boolean,
     defaultPerPage: number,
+    sortBy?: { [x: string]: any },
     filters?: { [x: string]: any },
     transformFilters?: (filters: { [x: string]: any }) => { [x: string]: any }
 }
