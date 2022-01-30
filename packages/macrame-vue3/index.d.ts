@@ -58,6 +58,17 @@ type UseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
 
 export declare function useIndex<TItem = Model>(props: Macrame.UseIndexProps): Index<TItem>;
 
+export type TListItem<M = Model> = {
+    children: TList<M>,
+    value: M
+}
+
+export type TList<T = Model> = TListItem<T>[];
+
+type UseList<TItem = Model> = (list?: TList<TItem>) => TList<TItem>;
+
+export declare function useList<TItem = Model>(list?: TList<TItem>): TList<TItem>;
+
 type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
 export const FormInput : TFormInput;
 
