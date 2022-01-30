@@ -27,6 +27,8 @@ type TFormProps = Macrame.FormProps & {
 type TForm = FunctionalComponent<TFormProps>;
 export const Form : TForm;
 
+export type TFilter = {[k: string]: any}
+
 interface Index<TItem = any> {
     processing: boolean,
     perPage: number,
@@ -39,10 +41,14 @@ interface Index<TItem = any> {
     toItem: number,
     totalItems: number,
     filters: any,
+    sortBy: {[k: string]: any},
+    addSortBy: (key: string, direction?: string) => void,
+    removeSortBy: (key: string) => void,
+    isSortedBy: (key: string, direction?: string) => boolean,
     reloadOnChange: (item: (WatchSource<unknown> | object)[]) => void,
     reload: () => void
     loadItems: () => void,
-    addFilter: (filter: string) => void,
+    addFilter: (filter: TFilter) => void,
     removeFilter: (filter: string) => void,
     setPage: (page: number) => void
     nextPage: () => void,

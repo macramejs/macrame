@@ -1,12 +1,21 @@
 import { ref, reactive, watch } from "vue";
 import { UseIndex } from "../index";
 
+const defaultTransformFilters = filters => {
+    for (let key in filters) {
+        filters[key] = filters[key].value;
+    }
+
+    return filters;
+}
+
 const useIndex: UseIndex = function useIndex({ 
     route, 
     syncUrl = false, 
     defaultPerPage = 10, 
     filters = {}, 
-    transformFilters 
+    sortBy = {},
+    transformFilters = defaultTransformFilters
 }) {
     const search = ref<string>("");
 
@@ -27,6 +36,7 @@ const useIndex: UseIndex = function useIndex({
             afterUpdate: [],
         },
         filters: reactive(filters),
+        sortBy: reactive(sortBy),
         loadItems() {
             this.processing = true;
 
@@ -86,6 +96,35 @@ const useIndex: UseIndex = function useIndex({
 
             this.setPage(1);
         },
+        isSortedBy(key, direction = null) {
+            if(direction == 'desc' || direction == 'asc') {
+                return this.sortBy.includes(`${key}.${direction}`);
+            } 
+
+            return this.sortBy.includes(`${key}.desc`) || this.sortBy.includes(`${key}.asc`);
+        },
+        addSortBy(key, direction = 'asc') {
+            let value = `${key}.${direction}`;
+
+            if(this.isSortedBy(key, direction == 'asc' ? 'decs' : 'asc')) {
+                this.removeSortBy(key);
+            }
+
+            if(!this.sortBy.includes(value)) {
+                this.sortBy.push(value);
+            }
+        },
+        removeSortBy(key) {
+            let index = this.sortBy.indexOf(`${key}.desc`);
+            if(index > -1) {
+                this.sortBy.splice(index);
+            }
+            
+            index = this.sortBy.indexOf(`${key}.asc`);
+            if(index > -1) {
+                this.sortBy.splice(index)
+            }
+        },
         beforeUpdate(cb) {
             this.__hooks.beforeUpdate.push(cb)
         },
@@ -129,9 +168,13 @@ const useIndex: UseIndex = function useIndex({
             console.log(params);
         },
         __getUrl() {
-            const paramsString = new URLSearchParams(this.__getParams()).toString();
+            const params = new URLSearchParams(this.__getParams());
+
+            for(let i=0;i<this.sortBy.length;i++) {
+                params.append('sortBy[]', this.sortBy[i]);
+            }
             
-            return `${this.__route}?${paramsString}`;
+            return `${this.__route}?${params.toString()}`;
         },
         __getParams() {
             let params = {
@@ -152,7 +195,7 @@ const useIndex: UseIndex = function useIndex({
 
                 params[`filter.${key}`] = filters[key];
             }
-
+            
             for(let key in params) {
                 params[key] = encodeURIComponent(params[key]);
             }

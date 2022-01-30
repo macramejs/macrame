@@ -18,7 +18,8 @@ export declare interface FormProps {
 export declare interface UseIndexProps {
     route: string,
     syncUrl: boolean,
-    defaultPerPage: number,
+    defaultPerPage?: number,
+    sortBy?: { [x: string]: any },
     filters?: { [x: string]: any },
     transformFilters?: (filters: { [x: string]: any }) => { [x: string]: any }
 }
