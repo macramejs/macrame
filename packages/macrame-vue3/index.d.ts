@@ -64,14 +64,25 @@ type UseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
 
 export declare function useIndex<TItem = Model>(props: Macrame.UseIndexProps): Index<TItem>;
 
+export type TList<M = Model> = {
+    items: TListItem<M>[]
+    push: (item: M, children?: RawListItem[]) => void,
+    pop: () => M | void,
+};
+
 export type TListItem<M = Model> = {
     children: TList<M>,
     value: M
 }
 
-export type TList<T = Model> = TListItem<T>[];
+export type RawListItem<M = Model> = {
+    children: RawListItem<M>[],
+    value: M 
+}
 
-type UseList<TItem = Model> = (list?: TList<TItem>) => TList<TItem>;
+export type RawList<M = Model> = RawListItem<M>[];
+
+type UseList<M = Model> = (list?: RawList<M>) => TList<M>;
 
 export declare function useList<TItem = Model>(list?: TList<TItem>): TList<TItem>;
 
