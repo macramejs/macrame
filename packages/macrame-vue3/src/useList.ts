@@ -7,9 +7,9 @@ const useList : UseList = (list = []) => {
 
     for(let i = 0;i<list.length;i++) {
         items.push({
-            children: useList(items[i].children),
+            children: useList(list[i].children),
             uuid: uuid(),
-            value: items[i].value
+            value: list[i].value
         });
     }
 

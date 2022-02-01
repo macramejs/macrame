@@ -84,7 +84,7 @@ export type RawList<M = Model> = RawListItem<M>[];
 
 type UseList<M = Model> = (list?: RawList<M>) => TList<M>;
 
-export declare function useList<TItem = Model>(list?: TList<TItem>): TList<TItem>;
+export declare function useList<TItem = Model>(list?: RawList<TItem>): TList<TItem>;
 
 type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
 export const FormInput : TFormInput;
