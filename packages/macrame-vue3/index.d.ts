@@ -64,6 +64,25 @@ type UseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
 
 export declare function useIndex<TItem = Model>(props: Macrame.UseIndexProps): Index<TItem>;
 
+export type SaveJob = () => Promise<any>;
+
+export type SaveQueue = {
+    jobs: {
+        [key: string]: {
+            job: SaveJob,
+            callback: () => void
+        }[]
+    },
+    isDirty: boolean,
+    add: (key: string, job: SaveJob, callback?: () => void) => void,
+    remove: (key: string) => any,
+    save: () => void,
+};
+
+type UseSaveQueue = () => SaveQueue;
+
+export declare function useSaveQueue() : SaveQueue;
+
 export type TList<M = Model> = {
     items: TListItem<M>[]
     push: (item: M, children?: RawListItem[]) => void,
