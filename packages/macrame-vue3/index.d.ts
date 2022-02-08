@@ -19,7 +19,7 @@ type TMacrameForm<TItem> =  {
 type UseFormOptions = Macrame.UseFormOptions | Partial<VisitOptions>;
 
 type TuseForm<TItem = Model> = (route: string, model: TItem, options?: UseFormOptions) => TMacrameForm<TItem>;
-export declare function useForm<TItem = Model>(route: string | Ref<string>, model: TItem, options?: Macrame.UseFormOptions) : TMacrameForm<TItem>;
+export declare function useForm<TItem = Model>(route: string | Ref<string>, model: TItem, options?: UseFormOptions) : TMacrameForm<TItem>;
 
 type TFormProps = Macrame.FormProps & {
     form: TMacrameForm<Model>
@@ -64,6 +64,17 @@ type UseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
 
 export declare function useIndex<TItem = Model>(props: Macrame.UseIndexProps): Index<TItem>;
 
+export type Original<M = any> = {
+    raw: M,
+    stringified: string,
+    update: (value: M) => void,
+    matches: (value: M) => boolean
+}
+
+export type UseOriginal<M = any> = (value: M) => Original<M>;
+
+export declare function useOriginal<M = any>(value: M) : Original<M>;
+
 export type SaveJob = () => Promise<any>;
 
 export type SaveQueue = {
@@ -84,9 +95,10 @@ type UseSaveQueue = () => SaveQueue;
 export declare function useSaveQueue() : SaveQueue;
 
 export type TList<M = Model> = {
-    items: TListItem<M>[]
+    items: TListItem<M>[],
     push: (item: M, children?: RawListItem[]) => void,
     pop: () => M | void,
+    setItems: (list: RawList<M>) => void
 };
 
 export type TListItem<M = Model> = {
