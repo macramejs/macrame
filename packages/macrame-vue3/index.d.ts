@@ -1,5 +1,5 @@
 import * as Macrame from '@macramejs/macrame'
-import { FunctionalComponent, Plugin, WatchSource, Ref } from 'vue'
+import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, VueComponent, PropType } from 'vue'
 import { InertiaForm, VisitOptions, FormDataConvertible } from '@inertiajs/inertia-vue3';
 
 type Data = Record<string, any|undefined>;
@@ -172,3 +172,44 @@ export const Checkbox : TCheckbox;
 
 type TFieldTitle = FunctionalComponent<Macrame.FieldTitleProps>;
 export const FieldTitle : TFieldTitle;
+
+// Cabinet / Sections
+
+export declare interface TSection {
+    type: string,
+    value: Model
+}
+
+export declare type DragOptions = {
+    animation?: number,
+    ghostClass?: string,
+}
+
+export declare type CabinetProps = {
+    group: {type: StringConstructor, default: string}
+};
+
+export const Cabinet : DefineComponent<CabinetProps>;
+
+export declare type TSections = {
+    [k: string]: VueComponent | FunctionalComponent;
+}[];
+
+declare type DraggableSection = {
+    uuid: string;
+    component: any;
+    key?: string;
+    value?: Model;
+};
+
+export declare type SectionsProps = {
+    modelValue: {type: PropType<TSection[]>, required: true},
+    sections: {type: PropType<TSections>, required: true},
+    group: {type: StringConstructor, default: string},
+    dragOptions: {
+        type: PropType<DragOptions>, 
+        default: () => {animation: number, ghostClass: string}
+    },
+};
+
+export const Sections : DefineComponent<SectionsProps>;
