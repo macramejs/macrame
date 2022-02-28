@@ -1,5 +1,5 @@
 import * as Macrame from '@macramejs/macrame'
-import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, VueComponent, PropType } from 'vue'
+import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, Component as VueComponent, PropType } from 'vue'
 import { InertiaForm, VisitOptions, FormDataConvertible } from '@inertiajs/inertia-vue3';
 
 type Data = Record<string, any|undefined>;

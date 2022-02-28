@@ -4,10 +4,10 @@ import {
     watch, 
     PropType, 
     Component as VueComponent, 
-    FuncionalComponent 
+    FunctionalComponent 
 } from 'vue';
 import Draggable from 'vuedraggable';
-import { TSection, TModel, DragOptions } from './index';
+import { TSection, Model, DragOptions } from './../index';
 const uuid = require('uuid').v4;
 
 declare type TSections = {
@@ -18,7 +18,7 @@ declare type DraggableSection = {
     uuid: string;
     component: any;
     key?: string;
-    value?: TModel;
+    value?: Model;
 };
 
 const template = `
