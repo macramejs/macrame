@@ -1,9 +1,10 @@
+import * as _ from "lodash";
 import { ref, reactive, watch } from "vue";
 import { UseIndex } from "../index";
 
 const defaultTransformFilters = filters => {
     for (let key in filters) {
-        filters[key] = filters[key].value;
+        filters[key] = filters[key].value;        
     }
 
     return filters;
@@ -160,21 +161,32 @@ const useIndex: UseIndex = function useIndex({
             }
 
             let params = {};
+
             let p = this.__getParams();
+
             for(let key in p) {
                 params[prefix+key] = p[key];
             }
-
-            console.log(params);
         },
         __getUrl() {
-            const params = new URLSearchParams(this.__getParams());
+            const searchParams = new URLSearchParams([]);
+
+            let params = this.__getParams();
+            for(let key in params) {
+                if(Array.isArray(params[key])) {
+                    for(let i = 0;i<params[key].length;i++) {
+                        searchParams.append(`${key}[]`, params[key][i]);
+                    }
+                } else {
+                    searchParams.append(key, encodeURIComponent(params[key]));
+                }
+            }            
 
             for(let i=0;i<this.sortBy.length;i++) {
-                params.append('sortBy[]', this.sortBy[i]);
+                searchParams.append('sortBy[]', this.sortBy[i]);
             }
             
-            return `${this.__route}?${params.toString()}`;
+            return `${this.__route}?${searchParams.toString()}`;
         },
         __getParams() {
             let params = {
@@ -192,12 +204,8 @@ const useIndex: UseIndex = function useIndex({
                 if(!filters[key]) {
                     continue;
                 }
-
-                params[`filter.${key}`] = filters[key];
-            }
-            
-            for(let key in params) {
-                params[key] = encodeURIComponent(params[key]);
+                
+                params[`filter.${key}`] = filters[key]; 
             }
 
             return params;

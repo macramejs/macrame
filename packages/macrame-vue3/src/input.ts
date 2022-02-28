@@ -1,5 +1,5 @@
 import { h } from 'vue';
-import { TInput } from '../../index';
+import { TInput } from '../index';
 const debounce = require('lodash.debounce');
 
 export const Input : TInput = function({ modelModifiers = {} }, { attrs = {}, emit }) {

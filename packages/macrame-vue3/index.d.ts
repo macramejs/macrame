@@ -1,6 +1,6 @@
 import * as Macrame from '@macramejs/macrame'
 import { FunctionalComponent, Plugin, WatchSource, Ref } from 'vue'
-import { InertiaForm, VisitOptions } from '@inertiajs/inertia-vue3';
+import { InertiaForm, VisitOptions, FormDataConvertible } from '@inertiajs/inertia-vue3';
 
 type Data = Record<string, any|undefined>;
 type Model = Record<string, any>;
@@ -75,6 +75,17 @@ export type UseOriginal<M = any> = (value: M) => Original<M>;
 
 export declare function useOriginal<M = any>(value: M) : Original<M>;
 
+export type Translatable<M = string> = {
+    value: M,
+    values: {[k: string]: M},
+    locale: Ref<string>,
+    setLocale: (locale: string) => void,
+}
+
+export type UseTranslatable<M = string> = (values: {[k:string]: M}, locale: Ref<string>) => Translatable<M>;
+
+export declare function useTranslatable<M = string>(values: {[k: string]: M}, locale: Ref<string>) : Translatable<M>;
+
 export type SaveJob = () => Promise<any>;
 
 export type SaveQueue = {
@@ -94,11 +105,19 @@ type UseSaveQueue = () => SaveQueue;
 
 export declare function useSaveQueue() : SaveQueue;
 
+export type ListOrder = {
+    id: number,
+    children: ListOrder
+}[] | FormDataConvertible;
+
 export type TList<M = Model> = {
     items: TListItem<M>[],
+    onOrderChange: (order: ListOrder) => void,
     push: (item: M, children?: RawListItem[]) => void,
     pop: () => M | void,
     setItems: (list: RawList<M>) => void
+    updateOnChange: (list: RawList<M>) => void
+    getOrder: () => ListOrder
 };
 
 export type TListItem<M = Model> = {
@@ -113,9 +132,13 @@ export type RawListItem<M = Model> = {
 
 export type RawList<M = Model> = RawListItem<M>[];
 
-type UseList<M = Model> = (list?: RawList<M>) => TList<M>;
+export type UseListOptions = {
+    onOrderChange?: (order: ListOrder) => void
+}
 
-export declare function useList<TItem = Model>(list?: RawList<TItem>): TList<TItem>;
+type UseList<M = Model> = (list?: RawList<M>, options?: UseListOptions) => TList<M>;
+
+export declare function useList<TItem = Model>(list?: RawList<TItem>, options?: UseListOptions): TList<TItem>;
 
 type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
 export const FormInput : TFormInput;

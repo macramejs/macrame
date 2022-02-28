@@ -20,10 +20,10 @@ const useForm : TuseForm = function(route, model, {
     let form = reactive({
         ...inertiaForm,
         submit(e) {
-            if(e instanceof Event) {
+            if(e instanceof Event) {
                 e.preventDefault();
             }
-
+            
             this.__submit(method, route, {
                 headers: { Accept: 'application/json' },
                 onCancelToken, 
