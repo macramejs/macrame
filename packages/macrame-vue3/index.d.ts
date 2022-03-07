@@ -140,38 +140,8 @@ type UseList<M = Model> = (list?: RawList<M>, options?: UseListOptions) => TList
 
 export declare function useList<TItem = Model>(list?: RawList<TItem>, options?: UseListOptions): TList<TItem>;
 
-type TFormInput = FunctionalComponent<Macrame.FormInputProps<InertiaForm<Record<string, any>>>>;
-export const FormInput : TFormInput;
-
-type TFormSelect = FunctionalComponent<Macrame.FormSelectProps<InertiaForm<Record<string, any>>>>;
-export const FormSelect : TFormSelect;
-
-type TFormTextarea = FunctionalComponent<Macrame.FormTextareatProps<InertiaForm<Record<string, any>>>>;
-export const FormTextarea : TFormTextarea;
-
-type TFormCheckboxes = FunctionalComponent<Macrame.FormCheckboxesProps<InertiaForm<Record<string, any>>>>;
-export const FormCheckboxes : TFormCheckboxes;
-
-type TTd = FunctionalComponent<Macrame.TdProps>;
-export const Td : TTd;
-
-type TTh = FunctionalComponent<Macrame.ThProps>;
-export const Th : TTh;
-
-type TTextarea = FunctionalComponent<Data>;
-export const Textarea : TTextarea;
-
 type TInput = FunctionalComponent<Data>;
 export const Input : TInput;
-
-type TSelect = FunctionalComponent<Data>;
-export const Select : TSelect;
-
-type TCheckbox = FunctionalComponent<Data>;
-export const Checkbox : TCheckbox;
-
-type TFieldTitle = FunctionalComponent<Macrame.FieldTitleProps>;
-export const FieldTitle : TFieldTitle;
 
 // Cabinet / Sections
 
