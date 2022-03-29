@@ -113,10 +113,10 @@ export type ListOrder = {
 export type Tree<M = Model> = {
     items: TreeItem<M>[],
     onOrderChange: (order: ListOrder) => void,
-    push: (item: M, children?: RawListItem[]) => void,
+    push: (item: M, children?: RawTreeItem[]) => void,
     pop: () => M | void,
-    setItems: (list: RawList<M>) => void
-    updateOnChange: (list: RawList<M>) => void
+    setItems: (list: RawTree<M>) => void
+    updateOnChange: (list: RawTree<M>) => void
     getOrder: () => ListOrder
 };
 
@@ -125,20 +125,20 @@ export type TreeItem<M = Model> = {
     value: M
 }
 
-export type RawListItem<M = Model> = {
-    children: RawListItem<M>[],
+export type RawTreeItem<M = Model> = {
+    children: RawTreeItem<M>[],
     value: M 
 }
 
-export type RawList<M = Model> = RawListItem<M>[];
+export type RawTree<M = Model> = RawTreeItem<M>[];
 
 export type UseTreeOptions = {
     onOrderChange?: (order: ListOrder) => void
 }
 
-type UseTree<M = Model> = (list?: RawList<M>, options?: UseTreeOptions) => Tree<M>;
+type UseTree<M = Model> = (list?: RawTree<M>, options?: UseTreeOptions) => Tree<M>;
 
-export declare function useTree<TItem = Model>(list?: RawList<TItem>, options?: UseTreeOptions): Tree<TItem>;
+export declare function useTree<TItem = Model>(list?: RawTree<TItem>, options?: UseTreeOptions): Tree<TItem>;
 
 type TInput = FunctionalComponent<Data>;
 export const Input : TInput;
