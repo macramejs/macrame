@@ -75,16 +75,16 @@ export type UseOriginal<M = any> = (value: M) => Original<M>;
 
 export declare function useOriginal<M = any>(value: M) : Original<M>;
 
-export type Translatable<M = string> = {
+export type TranslatableReactive<M = string> = {
     value: M,
     values: {[k: string]: M},
     locale: Ref<string>,
     setLocale: (locale: string) => void,
 }
 
-export type UseTranslatable<M = string> = (values: {[k:string]: M}, locale: Ref<string>) => Translatable<M>;
+export type Translatable<M = string> = (values: {[k:string]: M}, locale: Ref<string>) => TranslatableReactive<M>;
 
-export declare function useTranslatable<M = string>(values: {[k: string]: M}, locale: Ref<string>) : Translatable<M>;
+export declare function translatable<M = string>(values: {[k: string]: M}, locale: Ref<string>) : TranslatableReactive<M>;
 
 export type SaveJob = () => Promise<any>;
 
@@ -110,8 +110,8 @@ export type ListOrder = {
     children: ListOrder
 }[] | FormDataConvertible;
 
-export type TList<M = Model> = {
-    items: TListItem<M>[],
+export type Tree<M = Model> = {
+    items: TreeItem<M>[],
     onOrderChange: (order: ListOrder) => void,
     push: (item: M, children?: RawListItem[]) => void,
     pop: () => M | void,
@@ -120,8 +120,8 @@ export type TList<M = Model> = {
     getOrder: () => ListOrder
 };
 
-export type TListItem<M = Model> = {
-    children: TList<M>,
+export type TreeItem<M = Model> = {
+    children: Tree<M>,
     value: M
 }
 
@@ -132,13 +132,13 @@ export type RawListItem<M = Model> = {
 
 export type RawList<M = Model> = RawListItem<M>[];
 
-export type UseListOptions = {
+export type UseTreeOptions = {
     onOrderChange?: (order: ListOrder) => void
 }
 
-type UseList<M = Model> = (list?: RawList<M>, options?: UseListOptions) => TList<M>;
+type UseTree<M = Model> = (list?: RawList<M>, options?: UseTreeOptions) => Tree<M>;
 
-export declare function useList<TItem = Model>(list?: RawList<TItem>, options?: UseListOptions): TList<TItem>;
+export declare function useTree<TItem = Model>(list?: RawList<TItem>, options?: UseTreeOptions): Tree<TItem>;
 
 type TInput = FunctionalComponent<Data>;
 export const Input : TInput;

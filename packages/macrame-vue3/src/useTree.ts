@@ -1,9 +1,9 @@
 import { reactive, watch } from "vue";
-import {UseList, Model, TList} from "../index";
+import {UseTree, Model, Tree} from "../index";
 import { useOriginal } from "./index";
 const uuid = require('uuid').v4;
 
-function parseOrderRecursive(list: TList) {
+function parseOrderRecursive(list: Tree) {
     let order = [];
 
     for (let i = 0; i < list.items.length; i++) {
@@ -16,13 +16,13 @@ function parseOrderRecursive(list: TList) {
     return order;
 }
 
-const useList : UseList = (items = [], options = {}) => {
+const useTree : UseTree = (items = [], options = {}) => {
     const list = reactive({
         items: [],
         onOrderChange: options.onOrderChange ? options.onOrderChange : (order) => {},
         push(item, children = []) {
             this.items.push({
-                children: useList(children),
+                children: useTree(children),
                 value: item,
             })
         },
@@ -34,7 +34,7 @@ const useList : UseList = (items = [], options = {}) => {
 
             for(let i = 0;i<list.length;i++) {
                 items.push({
-                    children: useList(list[i].children),
+                    children: useTree(list[i].children),
                     uuid: uuid(),
                     value: list[i].value
                 });
@@ -76,4 +76,4 @@ const useList : UseList = (items = [], options = {}) => {
     return list;
 }
 
-export default useList;
+export default useTree;
