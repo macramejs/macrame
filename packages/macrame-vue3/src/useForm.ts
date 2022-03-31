@@ -1,9 +1,13 @@
 import { h, reactive, watch } from 'vue';
 import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
-import { TForm, TuseForm } from '../index';
+import { UseForm } from '../index';
 
-const useForm : TuseForm = function(route, model, { 
+const useForm : UseForm = function({ 
+    route,
+    data,
     method = 'put',
+    onClean = () => {},
+    onDirty = () => {},
     onCancelToken = () => {},
     onBefore = () => {},
     onStart = () => {},
@@ -13,9 +17,9 @@ const useForm : TuseForm = function(route, model, {
     onSuccess = () => {},
     onError = () => {},
 } = {}) {
-    const inertiaForm = useInertiaForm(model);
+    const inertiaForm = useInertiaForm(data);
 
-    let defaults = JSON.stringify(model);
+    let defaults = JSON.stringify(data);
 
     let form = reactive({
         ...inertiaForm,
@@ -48,6 +52,12 @@ const useForm : TuseForm = function(route, model, {
 
     watch(form, () => {
         form.isDirty = JSON.stringify(form.data()) != defaults
+
+        if(form.isDirty) {
+            onDirty(form);
+        } else {
+            onClean(form);
+        }
     }, { immediate: true, deep: true })
 
     return form;

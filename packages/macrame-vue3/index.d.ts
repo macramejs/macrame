@@ -7,32 +7,29 @@ type Model = Record<string, any>;
 
 export const plugin: Plugin;
 
-type TMacrameForm<TItem> =  {
+type Form<M = Model> =  {
     submit(e?: Event | any): void,
     get: undefined,
     post: undefined,
     put: undefined,
     patch: undefined,
     delete: undefined,
-} & InertiaForm<TItem>
+} & InertiaForm<Model>
 
-type UseFormOptions = Macrame.UseFormOptions | Partial<VisitOptions>;
+type UseFormOptions<M = Model> = Macrame.UseFormOptions | Partial<VisitOptions> | {
+    onDirty?: (form: Form<M>) => void,
+    onClean?: (form: Form<M>) => void,
+};
 
-type TuseForm<TItem = Model> = (route: string, model: TItem, options?: UseFormOptions) => TMacrameForm<TItem>;
-export declare function useForm<TItem = Model>(route: string | Ref<string>, model: TItem, options?: UseFormOptions) : TMacrameForm<TItem>;
+type UseForm<M = Model> = (options: UseFormOptions<M>) => Form<M>;
+export declare function useForm<M = Model>(route: string | Ref<string>, model: M, options?: UseFormOptions<M>) : Form<M>;
 
-type TFormProps = Macrame.FormProps & {
-    form: TMacrameForm<Model>
-}
-type TForm = FunctionalComponent<TFormProps>;
-export const Form : TForm;
+export type IndexFilter = {[k: string]: any}
 
-export type TFilter = {[k: string]: any}
-
-interface Index<TItem = any> {
+interface Index<M = any> {
     processing: boolean,
     perPage: number,
-    items: TItem[],
+    items: M[],
     hasNextPage: boolean,
     hasPrevPage: boolean,
     currentPage: number,
@@ -48,7 +45,7 @@ interface Index<TItem = any> {
     reloadOnChange: (item: (WatchSource<unknown> | object)[]) => void,
     reload: () => void
     loadItems: () => void,
-    addFilter: (filter: TFilter) => void,
+    addFilter: (filter: IndexFilter) => void,
     removeFilter: (filter: string) => void,
     setPage: (page: number) => void
     nextPage: () => void,
@@ -60,9 +57,9 @@ interface Index<TItem = any> {
     beforeUpdate: (cb: CallableFunction) => void,
 }
 
-type UseIndex<TItem = Model> = (props: Macrame.UseIndexProps) => Index<TItem>;
+type UseIndex<M = Model> = (props: Macrame.UseIndexProps) => Index<M>;
 
-export declare function useIndex<TItem = Model>(props: Macrame.UseIndexProps): Index<TItem>;
+export declare function useIndex<M = Model>(props: Macrame.UseIndexProps): Index<M>;
 
 export type Original<M = any> = {
     raw: M,
