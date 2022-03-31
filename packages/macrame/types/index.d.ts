@@ -5,7 +5,9 @@ export declare interface Component {
     props?: Record<string, any>
 }
 
-export declare interface UseFormOptions {
+export declare interface UseFormOptions<M = Model> {
+    route: string,
+    data: M,
     method?: string
 }
 
