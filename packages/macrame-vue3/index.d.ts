@@ -22,7 +22,7 @@ type UseFormOptions<M = Model> = Macrame.UseFormOptions | Partial<VisitOptions> 
 };
 
 type UseForm<M = Model> = (options: UseFormOptions<M>) => Form<M>;
-export declare function useForm<M = Model>(route: string | Ref<string>, model: M, options?: UseFormOptions<M>) : Form<M>;
+export declare function useForm<M = Model>(options: UseFormOptions<M>) : Form<M>;
 
 export type IndexFilter = {[k: string]: any}
 
