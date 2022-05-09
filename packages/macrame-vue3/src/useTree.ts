@@ -42,17 +42,20 @@ const useTree : UseTree = (items = [], options = {}) => {
 
             this.items = items;
         },
-        updateOnChange(items) {
-            watch(
-                () => items,
-                () => list.setItems(items),
-                { immediate: true, deep: true }
-            );
-        },
         getOrder() {
             return parseOrderRecursive(this);
         }
     });
+
+    list.updateOnChange = (items) => {
+        watch(
+            items,
+            () => {
+                list.setItems(typeof items === 'function' ? items() : items);
+            },
+            { immediate: true, deep: true }
+        );
+    };
 
     list.setItems(items);
 

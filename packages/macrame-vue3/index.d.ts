@@ -1,5 +1,5 @@
 import * as Macrame from '@macramejs/macrame'
-import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, Component as VueComponent, PropType } from 'vue'
+import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, MultiWatchSources, Component as VueComponent, PropType } from 'vue'
 import { InertiaForm, VisitOptions, FormDataConvertible } from '@inertiajs/inertia-vue3';
 
 type Data = Record<string, any|undefined>;
@@ -113,7 +113,7 @@ export type Tree<M = Model> = {
     push: (item: M, children?: RawTreeItem[]) => void,
     pop: () => M | void,
     setItems: (list: RawTree<M>) => void
-    updateOnChange: (list: RawTree<M>) => void
+    updateOnChange: (MultiWatchSources) => void
     getOrder: () => ListOrder
 };
 
