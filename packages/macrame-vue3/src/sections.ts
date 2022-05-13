@@ -42,6 +42,7 @@ const template = `
                     :is="sections[getSectionKey(element.component)]"
                     :modelValue="element.value"
                     @update:modelValue="(e) => updateElement(element, e)"
+                    @destroy="(e) => removeElement(element)"
                 />
             </div>
         </template>
@@ -90,6 +91,12 @@ const Sections = defineComponent({
             }
         
             return '';
+        };
+
+        const removeElement = (element) => {
+            value.value = value.value.filter((section) => {
+                return section.uuid != element.uuid;
+            });
         };
 
         const parseValue = (value: TSection[]) => {
