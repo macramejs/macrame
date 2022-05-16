@@ -135,7 +135,7 @@ const Sections = defineComponent({
             { deep: true }
         );
 
-        return { drag, updateElement, getSectionKey, value };
+        return { drag, updateElement, removeElement, getSectionKey, value };
     }
 });
 
