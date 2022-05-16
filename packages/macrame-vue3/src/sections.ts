@@ -28,7 +28,6 @@ const template = `
         v-bind="dragOptions"
         :group="group"
         itemKey="uuid"
-        tag="transition-group"
         :component-data="{
             name: !drag ? 'flip-list' : null,
             wrap: true,
