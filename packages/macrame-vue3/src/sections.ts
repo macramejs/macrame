@@ -113,13 +113,23 @@ const Sections = defineComponent({
             return b;
         };
 
+        const defaultValue = (value, i) => {
+            let defaultValue = value[i].component.props.modelValue.default() ;
+            if(Object.keys(defaultValue).length < 1){
+                console.error('No default keys set in Section')
+            }
+
+            return defaultValue;
+        }
+
         const transformValue = (value: DraggableSection[]) => {
             let b: TSection[] = [];
         
             for (let i in value) {
+                                
                 b.push({
                     type: getSectionKey(value[i].component),
-                    value: value[i].value || {},
+                    value: value[i].value || defaultValue(value, i),
                 });
             }
         
