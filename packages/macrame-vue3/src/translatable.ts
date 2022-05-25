@@ -11,9 +11,16 @@ const translatable : Translatable = (values, locale) => {
         },
     });
 
-    watch(() => translatable.locale, (locale) => {
-        translatable.value = translatable.values[locale];
-    }, { intermediate: true });
+    watch(
+        () => translatable.locale,
+        (locale) => {
+            translatable.value = translatable.values[locale];
+        },
+        {
+            // force eager callback execution
+            immediate: true
+        }
+    );
 
     return translatable;
 }

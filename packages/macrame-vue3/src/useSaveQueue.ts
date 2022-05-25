@@ -27,9 +27,16 @@ const useSaveQueue = function() {
         },
     });
 
-    watch(saveQueue, () => {
-        saveQueue.isDirty = Object.keys(saveQueue.jobs).length > 0;
-    }, { intermediate: true });
+    watch(
+        saveQueue,
+        () => {
+            saveQueue.isDirty = Object.keys(saveQueue.jobs).length > 0;
+        },
+        {
+            // force eager callback execution
+            immediate: true
+        }
+    );
 
     return saveQueue;
 }
