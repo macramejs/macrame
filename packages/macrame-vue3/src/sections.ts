@@ -34,6 +34,7 @@ const template = `
         }"
         @start="drag = true"
         @end="drag = false"
+        handle=".handle"
     >
         <template #item="{ element }">
             <div>
