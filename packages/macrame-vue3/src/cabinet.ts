@@ -12,6 +12,7 @@ const template = `
         }"
         :sort="false"
         :clone="cloneSection"
+        item-key="id"
     >
         <template #item="{ element }">
             <div>
