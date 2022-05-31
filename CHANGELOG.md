@@ -1,3 +1,7 @@
+## [0.2.6](https://github.com/macramejs/macrame/compare/v0.2.5...v0.2.6) (2022-05-31)
+
+
+
 ## [0.2.5](https://github.com/macramejs/macrame/compare/v0.2.4...v0.2.5) (2022-05-23)
 
 
