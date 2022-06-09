@@ -72,16 +72,9 @@ export type UseOriginal<M = any> = (value: M) => Original<M>;
 
 export declare function useOriginal<M = any>(value: M) : Original<M>;
 
-export type TranslatableReactive<M = string> = {
-    value: M,
-    values: {[k: string]: M},
-    locale: Ref<string>,
-    setLocale: (locale: string) => void,
-}
+export type Translatable<M = string> = (locale: Ref<string>, values: {[k:string]: M}, onChange: (M) => void) => Ref<M>;
 
-export type Translatable<M = string> = (values: {[k:string]: M}, locale: Ref<string>) => TranslatableReactive<M>;
-
-export declare function translatable<M = string>(values: {[k: string]: M}, locale: Ref<string>) : TranslatableReactive<M>;
+export declare function translatable<M = string>(locale: Ref<string>, values: {[k: string]: M}, onChange: (M) => void) : Ref<M>;
 
 export type SaveJob = () => Promise<any>;
 
