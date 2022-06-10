@@ -1,7 +1,7 @@
 import { reactive, watch } from "vue";
 import {UseTree, Model, Tree} from "../index";
 import { useOriginal } from "./index";
-const uuid = require('uuid').v4;
+import { v4 as uuid } from 'uuid';
 
 function parseOrderRecursive(list: Tree) {
     let order = [];

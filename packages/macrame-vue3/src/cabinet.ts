@@ -1,6 +1,6 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import Draggable from 'vuedraggable';
-const uuid = require('uuid').v4;
+import { v4 as uuid } from 'uuid';
 
 const template = `
     <Draggable
