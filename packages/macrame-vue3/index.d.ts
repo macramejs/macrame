@@ -1,22 +1,24 @@
 import * as Macrame from '@macramejs/macrame'
 import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, MultiWatchSources, Component as VueComponent, PropType } from 'vue'
-import { InertiaForm, VisitOptions, FormDataConvertible } from '@inertiajs/inertia-vue3';
+import { AxiosInstance, AxiosResponse } from 'axios';
 
 type Data = Record<string, any|undefined>;
 type Model = Record<string, any>;
 
 export const plugin: Plugin;
 
-type Form<M = Model> =  {
-    submit(e?: Event | any): void,
-    get: undefined,
-    post: undefined,
-    put: undefined,
-    patch: undefined,
-    delete: undefined,
-} & InertiaForm<Model>
+type Form<M = Model> =  M | {
+    errors: Record<keyof M, string>,
+    isDirty: boolean,
+    original: Original<M>,
+    data(): M,
+    submit(e?: Event | any): Promise<AxiosResponse>,
+};
 
-type UseFormOptions<M = Model> = Macrame.UseFormOptions | Partial<VisitOptions> | {
+type UseFormOptions<M = Model> = {
+    data: M,
+    submit: (data: M) => Promise<AxiosResponse>,
+    transform?: (data: M) => any,
     onDirty?: (form: Form<M>) => void,
     onClean?: (form: Form<M>) => void,
 };
@@ -98,7 +100,7 @@ export declare function useSaveQueue() : SaveQueue;
 export type ListOrder = {
     id: number,
     children: ListOrder
-}[] | FormDataConvertible;
+}[];
 
 export type Tree<M = Model> = {
     items: TreeItem<M>[],

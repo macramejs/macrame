@@ -1,57 +1,59 @@
 import { h, reactive, watch } from 'vue';
 import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
 import { UseForm } from '../index';
+import useOriginal from './useOriginal';
 
 const useForm : UseForm = function({ 
-    route,
     data,
-    method = 'put',
+    submit,
+    transform = (data) => data,
     onClean = () => {},
     onDirty = () => {},
-    onCancelToken = () => {},
-    onBefore = () => {},
-    onStart = () => {},
-    onProgress = () => {},
-    onFinish = () => {},
-    onCancel = () => {},
-    onSuccess = () => {},
-    onError = () => {},
-} = {}) {
-    const inertiaForm = useInertiaForm(data);
-
-    let defaults = JSON.stringify(data);
-
+}) {
     let form = reactive({
-        ...inertiaForm,
-        submit(e) {
+        ...data,
+        errors: {},
+        isDirty: false,
+        original: useOriginal(data),
+        data() {
+            return Object.keys(data).reduce((carry, key) => {
+                carry[key] = this[key]
+                return carry
+            }, {});
+        },
+        async submit(e) {
             if(e instanceof Event) {
                 e.preventDefault();
             }
-            
-            this.__submit(method, route, {
-                headers: { Accept: 'application/json' },
-                onCancelToken, 
-                onBefore, 
-                onStart, 
-                onProgress, 
-                onFinish, 
-                onCancel, 
-                onSuccess, 
-                onError
-            });
 
-            defaults = JSON.stringify(this.data());
+            this.busy = true;
+
+            const data = transform(this.data())
+
+            return submit(data)
+                .then((response) => {
+                    this.errors = {};
+                    this.original.update(this.data());
+
+                    return new Promise(() => response);
+                })
+                .catch((error) => {
+                    let data = error.response.data;
+
+                    if('errors' in data) {
+                        this.errors = data.errors;
+                    }
+
+                    throw error;
+                })
+                .finally(() => {
+                    this.busy = false;
+                });
         },
-        get: undefined,
-        post: undefined,
-        put: undefined,
-        patch: undefined,
-        delete: undefined,
-        __submit: inertiaForm.submit
     });
 
     watch(form, () => {
-        form.isDirty = JSON.stringify(form.data()) != defaults
+        form.isDirty = form.original.matches(form.data());
 
         if(form.isDirty) {
             onDirty(form);
