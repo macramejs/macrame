@@ -1,5 +1,4 @@
-import { h, reactive, watch } from 'vue';
-import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
+import { reactive, watch } from 'vue';
 import { UseForm } from '../index';
 import useOriginal from './useOriginal';
 
