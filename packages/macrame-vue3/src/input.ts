@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { TInput } from '../index';
-import { debounce } from 'lodash.debounce'
+import debounce from 'lodash.debounce';
 
 export const Input : TInput = function({ modelModifiers = {} }, { attrs = {}, emit }) {
     let onInput = ({ target }) => {
