@@ -7,7 +7,7 @@ type Model = Record<string, any>;
 
 export const plugin: Plugin;
 
-type Form<M = Model> =  M | {
+type Form<M = Model> =  M & {
     errors: Record<keyof M, string>,
     isDirty: boolean,
     original: Original<M>,
