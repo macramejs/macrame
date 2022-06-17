@@ -11,25 +11,47 @@ type Form<M = Model> =  M & {
     errors: Record<keyof M, string>,
     isDirty: boolean,
     original: Original<M>,
+    isBusy: boolean,
+    isBusyLoading: boolean,
     data(): M,
+    load(id: number|string): Promise<Form<M>>,
     submit(e?: Event | any): Promise<AxiosResponse>,
 };
 
 type UseFormOptions<M = Model> = {
     data: M,
+
+    /**
+     * 
+     */
     submit: (data: M) => Promise<AxiosResponse>,
+
+    /**
+     * 
+     */
+    load?: (id: number|string) => Promise<M>,
+
+    /**
+     * 
+     */
     transform?: (data: M) => any,
+
+    /**
+     * 
+     */
     onDirty?: (form: Form<M>) => void,
+
+    /**
+     * 
+     */
     onClean?: (form: Form<M>) => void,
 };
 
 type UseForm<M = Model> = (options: UseFormOptions<M>) => Form<M>;
 export declare function useForm<M = Model>(options: UseFormOptions<M>) : Form<M>;
 
-export type IndexFilter = {[k: string]: any}
-
 interface Index<M = any> {
-    processing: boolean,
+    isBusy: boolean,
     perPage: number,
     items: M[],
     hasNextPage: boolean,
@@ -45,23 +67,65 @@ interface Index<M = any> {
     removeSortBy: (key: string) => void,
     isSortedBy: (key: string, direction?: string) => boolean,
     reloadOnChange: (item: (WatchSource<unknown> | object)[]) => void,
-    reload: () => void
-    loadItems: () => void,
-    addFilter: (filter: IndexFilter) => void,
-    removeFilter: (filter: string) => void,
+    load: () => void,
     setPage: (page: number) => void
     nextPage: () => void,
     prevPage: () => void,
     lastPage: () => void,
     getLastPage: () => number,
-    updateSearch: (e: string | object) => void,
-    onUpdate: (cb: CallableFunction) => void,
-    beforeUpdate: (cb: CallableFunction) => void,
+    updateSearch: (e: string | object) => void,
 }
 
-type UseIndex<M = Model> = (props: Macrame.UseIndexProps) => Index<M>;
+interface IndexResource<M> {
+    data: M[],
+    total: number,
+    per_page: number,
+    current_page: number,
+    last_page: number,
+    from: number,
+    to: number
+}
 
-export declare function useIndex<M = Model>(props: Macrame.UseIndexProps): Index<M>;
+type IndexFilter<K extends string = string, V = any, T = {[k: string]: any}> = {
+    [k in K]:  {value: V} & T
+};
+
+type IndexFilters = { 
+    [k:string]: {
+        [k: string]: any,
+        value: any
+    }
+};
+
+
+
+interface IndexParams<
+    S extends string = string, 
+    F extends IndexFilters = IndexFilters
+> {
+    search?: string,
+    page?: number,
+    perPage?: number,
+    sortBy?: S[],
+    filters?: F,
+}
+
+interface UseIndexProps<
+    M, 
+    S extends string = string, 
+    F extends IndexFilters = IndexFilters
+> {
+    load: (params: IndexParams<S, F>) => Promise<AxiosResponse<IndexResource<M>>>,
+    filters?: F
+}
+
+type UseIndex<M = Model> = (props: UseIndexProps<M>) => Index<M>;
+
+export declare function useIndex<
+    M = Model, 
+    S extends string = string, 
+    F extends IndexFilters = IndexFilters
+>(props: UseIndexProps<M, S, F>): Index<M>;
 
 export type Original<M = any> = {
     raw: M,

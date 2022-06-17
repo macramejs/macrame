@@ -11,10 +11,9 @@ const defaultTransformFilters = filters => {
 }
 
 const useIndex: UseIndex = function useIndex({ 
-    route, 
-    syncUrl = false, 
-    defaultPerPage = 10, 
-    filters = {}, 
+    load,
+    perPage: 20,
+    filters = {},
     sortBy = {},
     transformFilters = defaultTransformFilters
 }) {
@@ -22,7 +21,7 @@ const useIndex: UseIndex = function useIndex({
 
     let index = reactive({
         processing: false,
-        perPage: defaultPerPage,
+        perPage,
         items: [],
         hasNextPage: false,
         hasPrevPage: false,

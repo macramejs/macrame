@@ -5,6 +5,7 @@ import useOriginal from './useOriginal';
 const useForm : UseForm = function({ 
     data,
     submit,
+    load = async (id) => {},
     transform = (data) => data,
     onClean = () => {},
     onDirty = () => {},
@@ -13,7 +14,20 @@ const useForm : UseForm = function({
         ...data,
         errors: {},
         isDirty: false,
+        isBusy: false,
+        isBusyLoading: false,
         original: useOriginal(data),
+        load(id) {
+            this.isBusyLoading = true;
+
+            return load(id)
+                .then((loadedData) => {
+                    Object.keys(data).forEach((key) => this[key] = loadedData[key]);
+
+                    return new Promise(this);
+                })
+                .finally(() => this.isBusyLoading = false);
+        },
         data() {
             return Object.keys(data).reduce((carry, key) => {
                 carry[key] = this[key]
@@ -25,7 +39,7 @@ const useForm : UseForm = function({
                 e.preventDefault();
             }
 
-            this.busy = true;
+            this.isBusy = true;
 
             const data = transform(this.data())
 
@@ -46,7 +60,7 @@ const useForm : UseForm = function({
                     throw error;
                 })
                 .finally(() => {
-                    this.busy = false;
+                    this.isBusy = false;
                 });
         },
     });
