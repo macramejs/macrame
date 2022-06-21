@@ -2,209 +2,126 @@ import * as _ from "lodash";
 import { ref, reactive, watch } from "vue";
 import { UseIndex } from "../index";
 
-const defaultTransformFilters = filters => {
-    for (let key in filters) {
-        filters[key] = filters[key].value;        
-    }
-
-    return filters;
-}
-
 const useIndex: UseIndex = function useIndex({ 
     load,
-    perPage: 20,
     filters = {},
     sortBy = {},
-    transformFilters = defaultTransformFilters
 }) {
     const search = ref<string>("");
 
     let index = reactive({
-        processing: false,
-        perPage,
+        isBusy: false,
+
         items: [],
+        totalItems: 0,
+        
+        perPage: 0,
         hasNextPage: false,
         hasPrevPage: false,
         currentPage: 1,
-        search: search,
+        lastPage: 1,
         fromItem: 0,
         toItem: 0,
-        totalItems: 0,
-        __route: route,
-        __hooks: {
-            beforeUpdate: [],
-            afterUpdate: [],
-        },
-        filters: reactive(filters),
-        sortBy: reactive(sortBy),
-        loadItems() {
-            this.processing = true;
 
-            for(let i in this.__hooks.beforeUpdate) {
-                this.__hooks.beforeUpdate[i](this);
-            }
+        search: search,
 
-            fetch(this.__getUrl())
-                .then(response => response.json())
-                .then((data) => this.__update(data))
-                .catch(() => this.processing = false);
+        filters: filters,
+
+        sortBy: sortBy,
+
+        async load() {
+            this.isBusy = true;
+
+            return load(this.__getParams())
+                .then(response => {
+                    this.items = response.data.data;
+                    this.totalItems = response.data.total;
+                    this.perPage = response.data.per_page;
+                    this.currentPage = response.data.current_page;
+                    this.lastPage = response.data.last_page;
+                    this.fromItem = response.data.from;
+                    this.toItem = response.data.to;
+                    this.hasNextPage = this.currentPage < this.lastPage;
+                    this.hasPrevPage = this.currentPage > 1;
+
+                    return new Promise(() => response);
+                })
+                .finally(() => this.isBusy = false);
         },
         reloadOnChange(value) {
-            watch(value, () => this.reload());
+            watch(value, () => this.load());
         },
-        reload() {
-            return this.loadItems();
+        setFilter(type, value) {
+            this.filters[type].value = value;
+            this.load();
         },
-        addFilter(filter) {
-            this.filters.push(filter);
+        removeFilter(type) {
+            const value = this.filters[type].value;
+
+            if(Array.isArray(value)) {
+                this.filters[type] = [];
+            } else if(typeof value === 'object') {
+                this.filters[type] = {};
+            } else {
+                this.filters[type] = undefined;
+            }
+            
             this.reload();
-        },
-        removeFilter(filter) {
-            //
-            this.reload();
-        },
-        getLastPage() {
-            return Math.ceil(this.totalItems / this.perPage);
         },
         setPage(newPage) {
-            if (this.newPage < 1 || this.newPage > this.getLastPage()) {
+            if (this.newPage < 1 || this.newPage > this.lastPage) {
                 return;
             }
 
             this.currentPage = newPage;
-
-            this.reload();
+            this.load();
         },
-        nextPage() {
+        setNextPage() {
             this.setPage(this.currentPage + 1);
         },
-
-        prevPage() {
+        setPrevPage() {
             this.setPage(this.currentPage - 1);
         },
-
-        lastPage() {
+        setLastPage() {
             this.setPage(this.getLastPage());
         },
         updateSearch(e) {
-            console.log({e});
-            if(e instanceof Event) {
-                this.search = (<HTMLTextAreaElement>e.target).value;
-            } else {
-                this.search = e;
-            }
+            search.value = e instanceof Event
+                ? (e.target as HTMLTextAreaElement).value
+                : e;
 
             this.setPage(1);
         },
         isSortedBy(key, direction = null) {
-            if(direction == 'desc' || direction == 'asc') {
-                return this.sortBy.includes(`${key}.${direction}`);
-            } 
+            if(!this.sortBy.includes(key)) return false;
+            if(!this.sortBy[key]) return false;
+            if(!direction) return true;
 
-            return this.sortBy.includes(`${key}.desc`) || this.sortBy.includes(`${key}.asc`);
+            return this.sortBy[key] == direction;
         },
         addSortBy(key, direction = 'asc') {
-            let value = `${key}.${direction}`;
-
-            if(this.isSortedBy(key, direction == 'asc' ? 'decs' : 'asc')) {
-                this.removeSortBy(key);
-            }
-
-            if(!this.sortBy.includes(value)) {
-                this.sortBy.push(value);
-            }
+            this.sortBy[key] = direction;
+            this.load();
         },
         removeSortBy(key) {
-            let index = this.sortBy.indexOf(`${key}.desc`);
-            if(index > -1) {
-                this.sortBy.splice(index);
-            }
-            
-            index = this.sortBy.indexOf(`${key}.asc`);
-            if(index > -1) {
-                this.sortBy.splice(index)
-            }
-        },
-        beforeUpdate(cb) {
-            this.__hooks.beforeUpdate.push(cb)
-        },
-        onUpdate(cb) {
-            this.__hooks.afterUpdate.push(cb)
-        },
-        __update(data) {
-            this.items = data.data;
-            this.totalItems = data.meta.total;
-            this.fromItem = data.meta.from;
-            this.toItem = data.meta.to;
-            this.perPage = data.meta.per_page;
-            this.hasNextPage = this.currentPage < this.getLastPage();
-            this.hasPrevPage = this.currentPage > 1;
-
-            this.processing = false;
-
-            this.__syncUrl();
-
-            for(let i in this.__hooks.afterUpdate) {
-                this.__hooks.afterUpdate[i](this);
-            }
-        },
-        __syncUrl() {
-            if(! syncUrl) {
-                return;
-            }
-
-            let prefix = '';
-
-            if(typeof syncUrl === 'string') {
-                prefix = `${syncUrl}`;
-            }
-
-            let params = {};
-
-            let p = this.__getParams();
-
-            for(let key in p) {
-                params[prefix+key] = p[key];
-            }
-        },
-        __getUrl() {
-            const searchParams = new URLSearchParams([]);
-
-            let params = this.__getParams();
-            for(let key in params) {
-                if(Array.isArray(params[key])) {
-                    for(let i = 0;i<params[key].length;i++) {
-                        searchParams.append(`${key}[]`, params[key][i]);
-                    }
-                } else {
-                    searchParams.append(key, encodeURIComponent(params[key]));
-                }
-            }            
-
-            for(let i=0;i<this.sortBy.length;i++) {
-                searchParams.append('sortBy[]', this.sortBy[i]);
-            }
-            
-            return `${this.__route}?${searchParams.toString()}`;
+            delete this.sortBy[key];
+            this.load();
         },
         __getParams() {
             let params = {
                 page: this.currentPage,
                 search: this.search,
+                sortBy: this.sortBy,
             };
-
-            let filters = JSON.parse(JSON.stringify(this.filters));
-
-            if(transformFilters) {
-                filters = transformFilters(filters);
-            }
 
             for(let key in filters) {
                 if(!filters[key]) {
                     continue;
                 }
                 
-                params[`filter.${key}`] = filters[key]; 
+                params[`filter.${key}`] = 'transform' in filters[key] 
+                    ? filters[key].transform(filters[key].value)
+                    : filters[key].value; 
             }
 
             return params;

@@ -1,5 +1,14 @@
 import * as Macrame from '@macramejs/macrame'
-import { FunctionalComponent, Plugin, WatchSource, Ref, DefineComponent, MultiWatchSources, Component as VueComponent, PropType } from 'vue'
+import { 
+    FunctionalComponent, 
+    Plugin, 
+    WatchSource, 
+    Ref, 
+    DefineComponent, 
+    MultiWatchSources, 
+    Component as VueComponent, 
+    PropType, 
+} from 'vue'
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 type Data = Record<string, any|undefined>;
@@ -7,73 +16,155 @@ type Model = Record<string, any>;
 
 export const plugin: Plugin;
 
-type Form<M = Model> =  M & {
+type FormResource<
+    M extends Model = Model, 
+    T extends Model = Model
+> = T & {
+    data: M
+}
+
+type Form<
+    M extends Model = Model, 
+    R extends FormResource<M> = FormResource<M>
+> =  M & {
     errors: Record<keyof M, string>,
     isDirty: boolean,
     original: Original<M>,
     isBusy: boolean,
     isBusyLoading: boolean,
     data(): M,
-    load(id: number|string): Promise<Form<M>>,
-    submit(e?: Event | any): Promise<AxiosResponse>,
+    load(id: number|string): Promise<AxiosResponse<R>>,
+    submit(e?: Event | any): Promise<AxiosResponse>,
 };
 
-type UseFormOptions<M = Model> = {
+type UseFormOptions<
+    M extends Model = Model, 
+    R extends FormResource<M> = FormResource<M>
+> = {
     data: M,
 
     /**
-     * 
+     * Submit the form.
      */
     submit: (data: M) => Promise<AxiosResponse>,
 
     /**
-     * 
+     * The function for initial loading the form attributes.
      */
-    load?: (id: number|string) => Promise<M>,
+    load?: (id: number|string) => Promise<AxiosResponse<R>>,
 
     /**
-     * 
+     * A function for transforming the data before submitting.
      */
     transform?: (data: M) => any,
 
     /**
      * 
      */
-    onDirty?: (form: Form<M>) => void,
-
-    /**
-     * 
-     */
-    onClean?: (form: Form<M>) => void,
+    onDirty?: (data: M) => void,
 };
 
-type UseForm<M = Model> = (options: UseFormOptions<M>) => Form<M>;
-export declare function useForm<M = Model>(options: UseFormOptions<M>) : Form<M>;
+type UseForm<
+    M extends Model = Model, 
+    R extends FormResource<M> = FormResource<M>
+> = (options: UseFormOptions<M, R>) => Form<M, R>;
 
-interface Index<M = any> {
-    isBusy: boolean,
-    perPage: number,
+export declare function useForm<
+    M extends Model = Model, 
+    R extends FormResource<M> = FormResource<M>
+>(options: UseFormOptions<M, R>) : Form<M, R>;
+
+interface Index<
+    M = Model, 
+    S extends string = string, 
+    F extends IndexFilters = IndexFilters
+> {
+    /**
+     * A list containting the items of the current page.
+     */
     items: M[],
+
+    /**
+     * Determines whether new items are currently being loaded.
+     */
+    isBusy: boolean,
+
+    /**
+     * The number of items per page.
+     */
+    perPage: number,
+
+    /**
+     * Determines whether there is a next page.
+     */
     hasNextPage: boolean,
+
+    /**
+     * Determines whether there is a previous page.
+     */
     hasPrevPage: boolean,
+
+    /**
+     * The current page.
+     */
     currentPage: number,
-    search: string,
+
+    /**
+     * The last page.
+     */
+    lastPage: number,
+
+    /**
+     * The index of the first item.
+     */
     fromItem: number,
+
+    /**
+     * The indeix of the last item.
+     */
     toItem: number,
+
+    /**
+     * The total number of available items.
+     */
     totalItems: number,
-    filters: any,
-    sortBy: {[k: string]: any},
-    addSortBy: (key: string, direction?: string) => void,
-    removeSortBy: (key: string) => void,
-    isSortedBy: (key: string, direction?: string) => boolean,
-    reloadOnChange: (item: (WatchSource<unknown> | object)[]) => void,
-    load: () => void,
-    setPage: (page: number) => void
-    nextPage: () => void,
-    prevPage: () => void,
-    lastPage: () => void,
-    getLastPage: () => number,
-    updateSearch: (e: string | object) => void,
+
+    /**
+     * The search string.
+     */
+    search: Ref<string>,
+
+    /**
+     * The filters.
+     */
+    filters: F,
+
+    /**
+     * The current sortings.
+     */
+    sortBy: {[k in S]: "desc"|"asc" },
+
+    // loading
+    load(): void,
+    reloadOnChange(item: (WatchSource<unknown> | object)[]): void,
+
+    // sorting
+    addSortBy(key: S, direction?: "desc"|"asc"): void,
+    removeSortBy: (key: S) => void,
+    isSortedBy: (key: S, direction?: "desc"|"asc") => boolean,
+    
+    // paging
+    setPage(page: number): void
+    setNextPage(): void,
+    setPrevPage(): void,
+    setLastPage(): void,
+
+    // filtering
+    setFilter<T extends keyof F>(type: T, value: F[T]["value"]): void,
+    removeFilter<T extends keyof F>(type: T): void
+
+    // searching
+    updateSearch(e: string | object): void,
 }
 
 interface IndexResource<M> {
@@ -86,18 +177,22 @@ interface IndexResource<M> {
     to: number
 }
 
-type IndexFilter<K extends string = string, V = any, T = {[k: string]: any}> = {
-    [k in K]:  {value: V} & T
+type IndexFilter<
+    V = any, 
+    T extends Model & { transform?: (value: V) => any } = Model
+> = T & { 
+    /**
+     * The value is required and will be send as a request parameter when 
+     * reloading.
+     * 
+     * The get parameter for the 
+     */
+    value: V 
 };
 
 type IndexFilters = { 
-    [k:string]: {
-        [k: string]: any,
-        value: any
-    }
+    [k:string]: IndexFilter
 };
-
-
 
 interface IndexParams<
     S extends string = string, 
@@ -110,22 +205,58 @@ interface IndexParams<
     filters?: F,
 }
 
-interface UseIndexProps<
+interface UseIndexOptions<
     M, 
     S extends string = string, 
     F extends IndexFilters = IndexFilters
 > {
+    /**
+     * The method for loading the items.
+     */
     load: (params: IndexParams<S, F>) => Promise<AxiosResponse<IndexResource<M>>>,
-    filters?: F
+
+    /**
+     * The default sorting keys.
+     */
+    sortBy?: {[k in S]: "desc"|"asc" },
+
+    /**
+     * The filters that can be applied to the index.
+     */
+    filters?: F,
 }
-
-type UseIndex<M = Model> = (props: UseIndexProps<M>) => Index<M>;
-
-export declare function useIndex<
-    M = Model, 
+type UseIndex<
+    M extends Model = Model, 
     S extends string = string, 
     F extends IndexFilters = IndexFilters
->(props: UseIndexProps<M, S, F>): Index<M>;
+> = (options: UseIndexOptions<M, S, F>) => Index<M, S, F>;
+
+/**
+ * Creates a reactive index object that contains helpers to handles requests to 
+ * index endpoints.
+ * 
+ * A basic example for an index of people could look like this:
+ * 
+ * ```js
+ * const peopleIndex = useIndex({
+ *     load: (params) => axios.get('pages', { params }),
+ * });
+ * 
+ * peopleIndex.load();
+ * 
+ * peopleIndex.items.forEach(person => ...);
+ * ``` 
+ * 
+ * The useIndex function accepts three generic arguments:
+ * 1. `M` corresponds to the object of the index
+ * 2. The keys that are sortable are given in `S` (e.g.: "id"|"title")
+ * 2. `F` corresponds to the filters that can be applied to the index.
+ */
+export declare function useIndex<
+    M extends Model = Model, 
+    S extends string = string, 
+    F extends IndexFilters = IndexFilters
+>(options: UseIndexOptions<M, S, F>): Index<M, S, F>;
 
 export type Original<M = any> = {
     raw: M,
@@ -192,9 +323,13 @@ export type UseTreeOptions = {
     onOrderChange?: (order: ListOrder) => void
 }
 
-type UseTree<M = Model> = (list?: RawTree<M>, options?: UseTreeOptions) => Tree<M>;
+type UseTree<
+    M extends Model = Model
+> = (list?: RawTree<M>, options?: UseTreeOptions) => Tree<M>;
 
-export declare function useTree<TItem = Model>(list?: RawTree<TItem>, options?: UseTreeOptions): Tree<TItem>;
+export declare function useTree<
+    M extends Model = Model
+>(list?: RawTree<M>, options?: UseTreeOptions): Tree<M>;
 
 type TInput = FunctionalComponent<Data>;
 export const Input : TInput;

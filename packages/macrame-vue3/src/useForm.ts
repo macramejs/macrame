@@ -21,10 +21,10 @@ const useForm : UseForm = function({
             this.isBusyLoading = true;
 
             return load(id)
-                .then((loadedData) => {
-                    Object.keys(data).forEach((key) => this[key] = loadedData[key]);
+                .then(response => {
+                    Object.keys(data).forEach((key) => this[key] = response.data.data[key]);
 
-                    return new Promise(this);
+                    return new Promise(() => response);
                 })
                 .finally(() => this.isBusyLoading = false);
         },
@@ -65,14 +65,15 @@ const useForm : UseForm = function({
         },
     });
 
+    onDirty.bind(form);
+
     watch(form, () => {
         form.isDirty = form.original.matches(form.data());
 
         if(form.isDirty) {
             onDirty(form);
-        } else {
-            onClean(form);
         }
+
     }, { immediate: true, deep: true })
 
     return form;
