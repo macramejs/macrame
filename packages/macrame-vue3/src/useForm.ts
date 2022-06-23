@@ -45,14 +45,14 @@ const useForm: UseForm = function ({
                 e.preventDefault();
             }
 
-            this.isBusy = true;
+            form.isBusy = true;
 
-            const data = transform(this.data());
+            const data = transform(form.data());
 
-            return submit(data, this.__id)
+            return submit(data, form.__id)
                 .then(response => {
-                    this.errors = {};
-                    this.original.update(this.data());
+                    form.errors = {};
+                    form.original.update(form.data());
 
                     return new Promise(() => response);
                 })
@@ -60,13 +60,13 @@ const useForm: UseForm = function ({
                     let data = error.response.data;
 
                     if ('errors' in data) {
-                        this.errors = data.errors;
+                        form.errors = data.errors;
                     }
 
                     throw error;
                 })
                 .finally(() => {
-                    this.isBusy = false;
+                    form.isBusy = false;
                 });
         },
     });
