@@ -1,6 +1,6 @@
-import { reactive, watch } from "vue";
-import {UseTree, Model, Tree} from "../index";
-import { useOriginal } from "./index";
+import { reactive, watch } from 'vue';
+import { UseTree, Model, Tree } from '../index';
+import { useOriginal } from './index';
 import { v4 as uuid } from 'uuid';
 
 function parseOrderRecursive(list: Tree) {
@@ -16,15 +16,17 @@ function parseOrderRecursive(list: Tree) {
     return order;
 }
 
-const useTree : UseTree = (items = [], options = {}) => {
+const useTree: UseTree = (items = [], options = {}) => {
     const list = reactive({
         items: [],
-        onOrderChange: options.onOrderChange ? options.onOrderChange : (order) => {},
+        onOrderChange: options.onOrderChange
+            ? options.onOrderChange
+            : order => {},
         push(item, children = []) {
             this.items.push({
                 children: useTree(children),
                 value: item,
-            })
+            });
         },
         pop() {
             return this.items.pop();
@@ -32,11 +34,11 @@ const useTree : UseTree = (items = [], options = {}) => {
         setItems(list) {
             let items = [];
 
-            for(let i = 0;i<list.length;i++) {
+            for (let i = 0; i < list.length; i++) {
                 items.push({
                     children: useTree(list[i].children),
                     uuid: uuid(),
-                    value: list[i].value
+                    value: list[i].value,
                 });
             }
 
@@ -44,10 +46,10 @@ const useTree : UseTree = (items = [], options = {}) => {
         },
         getOrder() {
             return parseOrderRecursive(this);
-        }
+        },
     });
 
-    list.updateOnChange = (items) => {
+    list.updateOnChange = items => {
         watch(
             items,
             () => {
@@ -59,24 +61,24 @@ const useTree : UseTree = (items = [], options = {}) => {
 
     list.setItems(items);
 
-    const originalOrder = useOriginal(list.getOrder);
-    
+    const originalOrder = useOriginal(list.getOrder());
+
     watch(
-        list, 
+        list,
         () => {
             const order = list.getOrder();
 
             if (originalOrder.matches(order)) {
-                return;    
+                return;
             }
 
             originalOrder.update(order);
             list.onOrderChange(order);
-        }, 
+        },
         { immediate: true, deep: true }
     );
 
     return list;
-}
+};
 
 export default useTree;

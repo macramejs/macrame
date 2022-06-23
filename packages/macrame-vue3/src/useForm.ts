@@ -2,12 +2,11 @@ import { reactive, watch } from 'vue';
 import { UseForm } from '../index';
 import useOriginal from './useOriginal';
 
-const useForm : UseForm = function({ 
+const useForm: UseForm = function ({
     data,
     submit,
-    load = async (id) => {},
-    transform = (data) => data,
-    onClean = () => {},
+    load = async id => {},
+    transform = data => data,
     onDirty = () => {},
 }) {
     let form = reactive({
@@ -22,38 +21,43 @@ const useForm : UseForm = function({
 
             return load(id)
                 .then(response => {
-                    Object.keys(data).forEach((key) => this[key] = response.data.data[key]);
+                    // this.setData(response.data.data);
 
+                    this.setData(response.data.data);
                     return new Promise(() => response);
                 })
-                .finally(() => this.isBusyLoading = false);
+                .finally(() => (this.isBusyLoading = false));
         },
         data() {
             return Object.keys(data).reduce((carry, key) => {
-                carry[key] = this[key]
-                return carry
+                carry[key] = this[key];
+                return carry;
             }, {});
         },
+        setData(newData) {
+            Object.keys(data).forEach(key => (this[key] = newData[key]));
+            this.original.update(this.data());
+        },
         async submit(e) {
-            if(e instanceof Event) {
+            if (e instanceof Event) {
                 e.preventDefault();
             }
 
             this.isBusy = true;
 
-            const data = transform(this.data())
+            const data = transform(this.data());
 
             return submit(data)
-                .then((response) => {
+                .then(response => {
                     this.errors = {};
                     this.original.update(this.data());
 
                     return new Promise(() => response);
                 })
-                .catch((error) => {
+                .catch(error => {
                     let data = error.response.data;
 
-                    if('errors' in data) {
+                    if ('errors' in data) {
                         this.errors = data.errors;
                     }
 
@@ -67,16 +71,19 @@ const useForm : UseForm = function({
 
     onDirty.bind(form);
 
-    watch(form, () => {
-        form.isDirty = form.original.matches(form.data());
+    watch(
+        form,
+        () => {
+            form.isDirty = !form.original.matches(form.data());
 
-        if(form.isDirty) {
-            onDirty(form);
-        }
-
-    }, { immediate: true, deep: true })
+            if (form.isDirty) {
+                onDirty(form);
+            }
+        },
+        { immediate: true, deep: true }
+    );
 
     return form;
-}
+};
 
 export default useForm;

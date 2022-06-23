@@ -1,12 +1,16 @@
-import {reactive} from "vue";
-import {UseOriginal} from "../index";
+import { reactive } from 'vue';
+import { UseOriginal } from '../index';
 
-const useOriginal : UseOriginal = (value) => {
+const clone = value => {
+    return JSON.parse(JSON.stringify(value));
+};
+
+const useOriginal: UseOriginal = value => {
     const original = reactive({
-        raw: value,
+        raw: clone(value),
         stringified: JSON.stringify(value),
         update(value) {
-            this.raw = value;
+            this.raw = clone(value);
             this.stringified = JSON.stringify(value);
         },
         matches(value) {
@@ -15,6 +19,6 @@ const useOriginal : UseOriginal = (value) => {
     });
 
     return original;
-}
+};
 
 export default useOriginal;
