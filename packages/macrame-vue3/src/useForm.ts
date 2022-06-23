@@ -23,9 +23,8 @@ const useForm: UseForm = function ({
 
             return load(id)
                 .then(response => {
-                    // this.setData(response.data.data);
-
                     this.setData(response.data.data);
+                    this.isBusyLoading = false;
                     return new Promise(() => response);
                 })
                 .finally(() => (this.isBusyLoading = false));
@@ -54,7 +53,7 @@ const useForm: UseForm = function ({
                     form.errors = {};
                     form.original.update(form.data());
 
-                    return new Promise(() => response);
+                    return response;
                 })
                 .catch(error => {
                     let data = error.response.data;
