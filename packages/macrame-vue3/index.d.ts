@@ -146,7 +146,7 @@ interface Index<
 
     // loading
     load(): void,
-    reloadOnChange(item: (WatchSource<unknown> | object)[]): void,
+    reloadOnChange(item: any): void,
 
     // sorting
     addSortBy(key: S, direction?: "desc"|"asc"): void,
