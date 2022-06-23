@@ -46,7 +46,7 @@ type UseFormOptions<
     /**
      * Submit the form.
      */
-    submit: (data: M) => Promise<AxiosResponse>,
+    submit: (data: M, id?: number) => Promise<AxiosResponse>,
 
     /**
      * The function for initial loading the form attributes.

@@ -16,8 +16,10 @@ const useForm: UseForm = function ({
         isBusy: false,
         isBusyLoading: false,
         original: useOriginal(data),
+        __id: undefined,
         load(id) {
             this.isBusyLoading = true;
+            this.__id = id;
 
             return load(id)
                 .then(response => {
@@ -47,7 +49,7 @@ const useForm: UseForm = function ({
 
             const data = transform(this.data());
 
-            return submit(data)
+            return submit(data, this.__id)
                 .then(response => {
                     this.errors = {};
                     this.original.update(this.data());
