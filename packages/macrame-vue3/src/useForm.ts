@@ -23,9 +23,8 @@ const useForm: UseForm = function ({
 
             return load(id)
                 .then(response => {
-                    // this.setData(response.data.data);
-
                     this.setData(response.data.data);
+                    this.isBusyLoading = false;
                     return new Promise(() => response);
                 })
                 .finally(() => (this.isBusyLoading = false));
@@ -45,28 +44,28 @@ const useForm: UseForm = function ({
                 e.preventDefault();
             }
 
-            this.isBusy = true;
+            form.isBusy = true;
 
-            const data = transform(this.data());
+            const data = transform(form.data());
 
-            return submit(data, this.__id)
+            return submit(data, form.__id)
                 .then(response => {
-                    this.errors = {};
-                    this.original.update(this.data());
+                    form.errors = {};
+                    form.original.update(form.data());
 
-                    return new Promise(() => response);
+                    return response;
                 })
                 .catch(error => {
                     let data = error.response.data;
 
                     if ('errors' in data) {
-                        this.errors = data.errors;
+                        form.errors = data.errors;
                     }
 
                     throw error;
                 })
                 .finally(() => {
-                    this.isBusy = false;
+                    form.isBusy = false;
                 });
         },
     });
