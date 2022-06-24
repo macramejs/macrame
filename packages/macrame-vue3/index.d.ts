@@ -307,6 +307,11 @@ export type Tree<M = Model> = {
     getOrder: () => ListOrder
 };
 
+export type TreeOrder = {
+    id: number,
+    children: TreeOrder[]
+}[];
+
 export type TreeItem<M = Model> = {
     children: Tree<M>,
     value: M
