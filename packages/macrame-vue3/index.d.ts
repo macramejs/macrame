@@ -317,12 +317,12 @@ export type TreeOrder = {
     children: TreeOrder[]
 }[];
 
-export type TreeItem<M = Model> = {
+export type TreeItem<M extends Model = Model> = {
     children: Tree<M>,
     value: M
 }
 
-export type RawTreeItem<M = Model> = {
+export type RawTreeItem<M extends Model = Model> = {
     children: RawTreeItem<M>[],
     value: M 
 }
