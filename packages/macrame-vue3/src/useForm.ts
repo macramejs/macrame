@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { reactive, watch } from 'vue';
 import { UseForm } from '../index';
 import useOriginal from './useOriginal';
@@ -13,21 +14,25 @@ const useForm: UseForm = function ({
         ...data,
         errors: {},
         isDirty: false,
-        isBusy: false,
-        isBusyLoading: false,
+        isSubmitting: false,
+        isLoading: false,
         original: useOriginal(data),
         __id: undefined,
         load(id) {
-            this.isBusyLoading = true;
+            this.isLoading = true;
             this.__id = id;
 
             return load(id)
                 .then(response => {
                     this.setData(response.data.data);
-                    this.isBusyLoading = false;
-                    return new Promise(() => response);
+                    this.isLoading = false;
+
+                    return response;
                 })
-                .finally(() => (this.isBusyLoading = false));
+                .catch(e => {
+                    this.isLoading = false;
+                    throw e;
+                });
         },
         data() {
             return Object.keys(data).reduce((carry, key) => {
@@ -38,13 +43,14 @@ const useForm: UseForm = function ({
         setData(newData) {
             Object.keys(data).forEach(key => (this[key] = newData[key]));
             this.original.update(this.data());
+            this.isDirty = false;
         },
         async submit(e) {
             if (e instanceof Event) {
                 e.preventDefault();
             }
 
-            form.isBusy = true;
+            this.isSubmitting = true;
 
             const data = transform(form.data());
 
@@ -53,19 +59,20 @@ const useForm: UseForm = function ({
                     form.errors = {};
                     form.original.update(form.data());
 
+                    this.isSubmitting = false;
+
                     return response;
                 })
-                .catch(error => {
-                    let data = error.response.data;
+                .catch(e => {
+                    let data = e.response.data;
 
                     if ('errors' in data) {
                         form.errors = data.errors;
                     }
 
-                    throw error;
-                })
-                .finally(() => {
-                    form.isBusy = false;
+                    this.isSubmitting = false;
+
+                    throw e;
                 });
         },
     });

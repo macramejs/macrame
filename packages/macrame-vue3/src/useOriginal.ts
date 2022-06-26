@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { reactive } from 'vue';
 import { UseOriginal } from '../index';
 
@@ -14,6 +15,9 @@ const useOriginal: UseOriginal = value => {
             this.stringified = JSON.stringify(value);
         },
         matches(value) {
+            console.log(JSON.stringify(value));
+            console.log(this.stringified);
+
             return JSON.stringify(value) == this.stringified;
         },
     });

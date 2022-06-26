@@ -16,10 +16,7 @@ function parseOrderRecursive(list: Tree) {
     return order;
 }
 
-const useTree: UseTree = ({
-    items = [],
-    load = async () => {}
-}) => {
+const useTree: UseTree = ({ items = [], load = async () => {} }) => {
     const list = reactive({
         items: [],
         isBusyLoading: false,
@@ -28,20 +25,24 @@ const useTree: UseTree = ({
             this.__changeHandlers.push(handler);
         },
         load() {
-            if(!load) throw new Error("Missing load function for tree.");
+            if (!load) throw new Error('Missing load function for tree.');
 
             this.isBusyLoading = true;
 
             return load()
                 .then(response => {
                     this.setItems(response.data.data);
+                    this.isBusyLoading = false;
                     return new Promise(() => response);
                 })
-                .finally(() => (this.isBusyLoading = false));
+                .catch(e => {
+                    this.isBusyLoading = false;
+                    throw e;
+                });
         },
         push(item, children = []) {
             this.items.push({
-                children: useTree(children),
+                children: useTree({ items: children }),
                 value: item,
             });
         },
@@ -53,7 +54,7 @@ const useTree: UseTree = ({
 
             for (let i = 0; i < list.length; i++) {
                 items.push({
-                    children: useTree({items: list[i].children}),
+                    children: useTree({ items: list[i].children }),
                     uuid: uuid(),
                     value: list[i].value,
                 });
@@ -81,14 +82,17 @@ const useTree: UseTree = ({
     const originalOrder = useOriginal(list.getOrder());
 
     watch(
-        list,
+        () => list,
         () => {
             const order = list.getOrder();
 
             if (originalOrder.matches(order)) return;
+
             originalOrder.update(order);
 
-            for(let i=0;i<list.__changeHandlers;i++) {
+            if (list.isBusyLoading) return;
+
+            for (let i = 0; i < list.__changeHandlers.length; i++) {
                 list.__changeHandlers[i](order);
             }
         },
