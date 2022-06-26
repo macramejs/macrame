@@ -16,12 +16,29 @@ function parseOrderRecursive(list: Tree) {
     return order;
 }
 
-const useTree: UseTree = (items = [], options = {}) => {
+const useTree: UseTree = ({
+    items = [],
+    load = async () => {}
+}) => {
     const list = reactive({
         items: [],
-        onOrderChange: options.onOrderChange
-            ? options.onOrderChange
-            : order => {},
+        isBusyLoading: false,
+        __changeHandlers: [],
+        onOrderChange(handler) {
+            this.__changeHandlers.push(handler);
+        },
+        load() {
+            if(!load) throw new Error("Missing load function for tree.");
+
+            this.isBusyLoading = true;
+
+            return load()
+                .then(response => {
+                    this.setItems(response.data.data);
+                    return new Promise(() => response);
+                })
+                .finally(() => (this.isBusyLoading = false));
+        },
         push(item, children = []) {
             this.items.push({
                 children: useTree(children),
@@ -36,7 +53,7 @@ const useTree: UseTree = (items = [], options = {}) => {
 
             for (let i = 0; i < list.length; i++) {
                 items.push({
-                    children: useTree(list[i].children),
+                    children: useTree({items: list[i].children}),
                     uuid: uuid(),
                     value: list[i].value,
                 });
@@ -49,6 +66,8 @@ const useTree: UseTree = (items = [], options = {}) => {
         },
     });
 
+    list.setItems(items);
+
     list.updateOnChange = items => {
         watch(
             items,
@@ -59,8 +78,6 @@ const useTree: UseTree = (items = [], options = {}) => {
         );
     };
 
-    list.setItems(items);
-
     const originalOrder = useOriginal(list.getOrder());
 
     watch(
@@ -68,12 +85,12 @@ const useTree: UseTree = (items = [], options = {}) => {
         () => {
             const order = list.getOrder();
 
-            if (originalOrder.matches(order)) {
-                return;
-            }
-
+            if (originalOrder.matches(order)) return;
             originalOrder.update(order);
-            list.onOrderChange(order);
+
+            for(let i=0;i<list.__changeHandlers;i++) {
+                list.__changeHandlers[i](order);
+            }
         },
         { immediate: true, deep: true }
     );

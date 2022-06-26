@@ -24,8 +24,8 @@ type FormResource<
 }
 
 type Form<
-    M extends Model = Model, 
-    R extends FormResource<M> = FormResource<M>
+    M extends Model = Model,
+    R extends FormResource = FormResource
 > =  M & {
     errors: Record<keyof M, string>,
     isDirty: boolean,
@@ -39,7 +39,7 @@ type Form<
 
 type UseFormOptions<
     M extends Model = Model, 
-    R extends FormResource<M> = FormResource<M>
+    R extends FormResource = FormResource
 > = {
     data: M,
 
@@ -66,12 +66,12 @@ type UseFormOptions<
 
 type UseForm<
     M extends Model = Model, 
-    R extends FormResource<M> = FormResource<M>
+    R extends FormResource = FormResource
 > = (options: UseFormOptions<M, R>) => Form<M, R>;
 
 export declare function useForm<
     M extends Model = Model, 
-    R extends FormResource<M> = FormResource<M>
+    R extends FormResource = FormResource
 >(options: UseFormOptions<M, R>) : Form<M, R>;
 
 interface Index<
@@ -292,19 +292,24 @@ type UseSaveQueue = () => SaveQueue;
 
 export declare function useSaveQueue() : SaveQueue;
 
-export type ListOrder = {
-    id: number,
-    children: ListOrder
-}[];
+interface TreeResource<
+    M extends Model = Model
+> {
+    data: RawTreeItem<M>[],
+}
 
-export type Tree<M = Model> = {
+export type Tree<
+    M extends Model = Model,
+    R extends TreeResource<M> = TreeResource<M>
+> = {
     items: TreeItem<M>[],
-    onOrderChange: (order: ListOrder) => void,
+    load(): Promise<AxiosResponse<R>>,
+    onOrderChange: (handler: (order: TreeOrder) => void) => void,
     push: (item: M, children?: RawTreeItem[]) => void,
     pop: () => M | void,
     setItems: (list: RawTree<M>) => void
     updateOnChange: (MultiWatchSources) => void
-    getOrder: () => ListOrder
+    getOrder: () => TreeOrder
 };
 
 export type TreeOrder = {
@@ -324,17 +329,23 @@ export type RawTreeItem<M = Model> = {
 
 export type RawTree<M = Model> = RawTreeItem<M>[];
 
-export type UseTreeOptions = {
-    onOrderChange?: (order: ListOrder) => void
+export type UseTreeOptions<
+    M extends Model = Model,
+    R extends TreeResource<M> = TreeResource<M>
+> = {
+    load?: () => Promise<AxiosResponse<R>>,
+    items?: RawTree<M>,
 }
 
 type UseTree<
-    M extends Model = Model
-> = (list?: RawTree<M>, options?: UseTreeOptions) => Tree<M>;
+    M extends Model = Model,
+    R extends TreeResource<M> = TreeResource<M>
+> = (options?: UseTreeOptions<M, R>) => Tree<M>;
 
 export declare function useTree<
-    M extends Model = Model
->(list?: RawTree<M>, options?: UseTreeOptions): Tree<M>;
+    M extends Model = Model,
+    R extends TreeResource<M> = TreeResource<M>
+>(options?: UseTreeOptions<M, R>): Tree<M, R>;
 
 type TInput = FunctionalComponent<Data>;
 export const Input : TInput;
