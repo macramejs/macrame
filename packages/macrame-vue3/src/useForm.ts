@@ -45,7 +45,7 @@ const useForm: UseForm = function ({
             this.original.update(this.data());
             this.isDirty = false;
         },
-        async submit(e) {
+        submit(e) {
             if (e instanceof Event) {
                 e.preventDefault();
             }
