@@ -52,12 +52,12 @@ const useForm: UseForm = function ({
 
             this.isSubmitting = true;
 
-            const data = transform(form.data());
+            const data = transform(this.data());
 
-            return submit(data, form.__id)
+            return submit(data, this.__id)
                 .then(response => {
-                    form.errors = {};
-                    form.original.update(form.data());
+                    this.errors = {};
+                    this.original.update(this.data());
 
                     this.isSubmitting = false;
 
@@ -67,7 +67,7 @@ const useForm: UseForm = function ({
                     let data = e.response.data;
 
                     if ('errors' in data) {
-                        form.errors = data.errors;
+                        this.errors = data.errors;
                     }
 
                     this.isSubmitting = false;
