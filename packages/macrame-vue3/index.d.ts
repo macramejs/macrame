@@ -141,7 +141,7 @@ interface Index<
     /**
      * The current sortings.
      */
-    sortBy: { [k in S]: 'desc' | 'asc' };
+    sortBy: [{ key: string; direction: 'desc' | 'asc' }];
 
     // loading
     load(): void;
@@ -219,7 +219,7 @@ interface UseIndexOptions<
     /**
      * The default sorting keys.
      */
-    sortBy?: { [k in S]: 'desc' | 'asc' };
+    sortBy?: [{ key: string; direction: 'desc' | 'asc' }];
 
     /**
      * The filters that can be applied to the index.

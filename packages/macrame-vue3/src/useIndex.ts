@@ -5,16 +5,14 @@ import { UseIndex } from '../index';
 const useIndex: UseIndex = function useIndex({
     load,
     filters = {},
-    sortBy = {},
+    sortBy = [],
 }) {
     const search = ref<string>('');
 
     let index = reactive({
         isBusy: false,
-
         items: [],
         totalItems: 0,
-
         perPage: 0,
         hasNextPage: false,
         hasPrevPage: false,
@@ -22,13 +20,9 @@ const useIndex: UseIndex = function useIndex({
         lastPage: 1,
         fromItem: 0,
         toItem: 0,
-
-        search: search,
-
-        filters: filters,
-
-        sortBy: sortBy,
-
+        search,
+        filters,
+        sortBy,
         async load() {
             this.isBusy = true;
 
@@ -101,29 +95,42 @@ const useIndex: UseIndex = function useIndex({
             return this.sortBy[key] == direction;
         },
         addSortBy(key, direction = 'asc') {
-            this.sortBy[key] = direction;
+            this.sortBy.push({ key, direction });
             this.load();
         },
         removeSortBy(key) {
-            delete this.sortBy[key];
+            for (let i = 0; i < this.sortBy.length; i++) {
+                if (this.sortBy[i].key == key) delete this.sortBy[i];
+            }
+
             this.load();
         },
         __getParams() {
             let params = {
                 page: this.currentPage,
                 search: this.search,
-                sortBy: this.sortBy,
+                sortBy: [],
             };
 
-            for (let key in filters) {
-                if (!filters[key]) {
+            for (let i = 0; i < this.sortBy; i++) {
+                params.sortBy.push(
+                    `${this.sortBy[i].key}.${this.sortBy[i].direction}`
+                );
+            }
+
+            for (let key in this.filters) {
+                if (!this.filters[key]) {
                     continue;
                 }
 
                 params[`filter.${key}`] =
-                    'transform' in filters[key]
-                        ? filters[key].transform(filters[key].value)
-                        : filters[key].value;
+                    'transform' in this.filters[key]
+                        ? this.filters[key].transform(this.filters[key].value)
+                        : this.filters[key].value;
+            }
+
+            for (let key in params) {
+                if (!params[key]) delete params[key];
             }
 
             return params;
