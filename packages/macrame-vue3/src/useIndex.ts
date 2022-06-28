@@ -1,20 +1,20 @@
-import * as _ from "lodash";
-import { ref, reactive, watch } from "vue";
-import { UseIndex } from "../index";
+import * as _ from 'lodash';
+import { ref, reactive, watch } from 'vue';
+import { UseIndex } from '../index';
 
-const useIndex: UseIndex = function useIndex({ 
+const useIndex: UseIndex = function useIndex({
     load,
     filters = {},
     sortBy = {},
 }) {
-    const search = ref<string>("");
+    const search = ref<string>('');
 
     let index = reactive({
         isBusy: false,
 
         items: [],
         totalItems: 0,
-        
+
         perPage: 0,
         hasNextPage: false,
         hasPrevPage: false,
@@ -46,7 +46,7 @@ const useIndex: UseIndex = function useIndex({
 
                     return new Promise(() => response);
                 })
-                .finally(() => this.isBusy = false);
+                .finally(() => (this.isBusy = false));
         },
         reloadOnChange(value) {
             watch(value, () => this.load());
@@ -58,14 +58,14 @@ const useIndex: UseIndex = function useIndex({
         removeFilter(type) {
             const value = this.filters[type].value;
 
-            if(Array.isArray(value)) {
+            if (Array.isArray(value)) {
                 this.filters[type] = [];
-            } else if(typeof value === 'object') {
+            } else if (typeof value === 'object') {
                 this.filters[type] = {};
             } else {
                 this.filters[type] = undefined;
             }
-            
+
             this.reload();
         },
         setPage(newPage) {
@@ -86,16 +86,17 @@ const useIndex: UseIndex = function useIndex({
             this.setPage(this.getLastPage());
         },
         updateSearch(e) {
-            search.value = e instanceof Event
-                ? (e.target as HTMLTextAreaElement).value
-                : e;
+            search.value =
+                e instanceof Event
+                    ? (e.target as HTMLTextAreaElement).value
+                    : e;
 
             this.setPage(1);
         },
         isSortedBy(key, direction = null) {
-            if(!this.sortBy.includes(key)) return false;
-            if(!this.sortBy[key]) return false;
-            if(!direction) return true;
+            if (!this.sortBy.includes(key)) return false;
+            if (!this.sortBy[key]) return false;
+            if (!direction) return true;
 
             return this.sortBy[key] == direction;
         },
@@ -114,18 +115,19 @@ const useIndex: UseIndex = function useIndex({
                 sortBy: this.sortBy,
             };
 
-            for(let key in filters) {
-                if(!filters[key]) {
+            for (let key in filters) {
+                if (!filters[key]) {
                     continue;
                 }
-                
-                params[`filter.${key}`] = 'transform' in filters[key] 
-                    ? filters[key].transform(filters[key].value)
-                    : filters[key].value; 
+
+                params[`filter.${key}`] =
+                    'transform' in filters[key]
+                        ? filters[key].transform(filters[key].value)
+                        : filters[key].value;
             }
 
             return params;
-        }
+        },
     });
 
     index.reloadOnChange(search);
