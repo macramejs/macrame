@@ -1,66 +1,97 @@
-import { h, reactive, watch } from 'vue';
-import { useForm as useInertiaForm } from '@inertiajs/inertia-vue3';
+import * as _ from 'lodash';
+import { reactive, watch } from 'vue';
 import { UseForm } from '../index';
+import useOriginal from './useOriginal';
 
-const useForm : UseForm = function({ 
-    route,
+const useForm: UseForm = function ({
     data,
-    method = 'put',
-    onClean = () => {},
+    submit,
+    load = async id => {},
+    transform = data => data,
     onDirty = () => {},
-    onCancelToken = () => {},
-    onBefore = () => {},
-    onStart = () => {},
-    onProgress = () => {},
-    onFinish = () => {},
-    onCancel = () => {},
-    onSuccess = () => {},
-    onError = () => {},
-} = {}) {
-    const inertiaForm = useInertiaForm(data);
-
-    let defaults = JSON.stringify(data);
-
+}) {
     let form = reactive({
-        ...inertiaForm,
+        ...data,
+        errors: {},
+        isDirty: false,
+        isSubmitting: false,
+        isLoading: false,
+        original: useOriginal(data),
+        __id: undefined,
+        load(id) {
+            this.isLoading = true;
+            this.__id = id;
+
+            return load(id)
+                .then(response => {
+                    this.setData(response.data.data);
+                    this.isLoading = false;
+
+                    return response;
+                })
+                .catch(e => {
+                    this.isLoading = false;
+                    throw e;
+                });
+        },
+        data() {
+            return Object.keys(data).reduce((carry, key) => {
+                carry[key] = this[key];
+                return carry;
+            }, {});
+        },
+        setData(newData) {
+            Object.keys(data).forEach(key => (this[key] = newData[key]));
+            this.original.update(this.data());
+            this.isDirty = false;
+        },
         submit(e) {
-            if(e instanceof Event) {
+            if (e instanceof Event) {
                 e.preventDefault();
             }
-            
-            this.__submit(method, route, {
-                headers: { Accept: 'application/json' },
-                onCancelToken, 
-                onBefore, 
-                onStart, 
-                onProgress, 
-                onFinish, 
-                onCancel, 
-                onSuccess, 
-                onError
-            });
 
-            defaults = JSON.stringify(this.data());
+            this.isSubmitting = true;
+
+            const data = transform(this.data());
+
+            return submit(data, this.__id)
+                .then(response => {
+                    this.errors = {};
+                    this.original.update(this.data());
+
+                    this.isSubmitting = false;
+
+                    return response;
+                })
+                .catch(e => {
+                    let data = e.response.data;
+
+                    if ('errors' in data) {
+                        this.errors = data.errors;
+                    }
+
+                    this.isSubmitting = false;
+
+                    throw e;
+                });
         },
-        get: undefined,
-        post: undefined,
-        put: undefined,
-        patch: undefined,
-        delete: undefined,
-        __submit: inertiaForm.submit
     });
 
-    watch(form, () => {
-        form.isDirty = JSON.stringify(form.data()) != defaults
+    onDirty.bind(form);
 
-        if(form.isDirty) {
-            onDirty(form);
-        } else {
-            onClean(form);
-        }
-    }, { immediate: true, deep: true })
+    watch(
+        form,
+        () => {
+            form.isDirty = !form.original.matches(form.data());
+
+            if (form.isDirty) {
+                onDirty(form);
+            }
+        },
+        { immediate: true, deep: true }
+    );
 
     return form;
-}
+};
 
 export default useForm;
