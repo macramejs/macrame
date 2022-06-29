@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { Component } from '../components';
-import debounce from 'lodash.debounce';
+import {debounce} from 'lodash.debounce';
 import { TIndexTable, TIndexSearch, TIndexPagination, TuseIndex } from '../..';
 import { Model } from '@macramejs/macrame';
 
