@@ -1,6 +1,6 @@
 import { h } from 'vue';
 import { TInput } from '../index';
-var debounce = require('lodash.debounce');
+import * as _ from 'lodash';
 
 export const Input: TInput = function (
     { modelModifiers = {} },
@@ -11,7 +11,7 @@ export const Input: TInput = function (
     };
 
     if (modelModifiers.debounce) {
-        onInput = debounce(onInput, 200);
+        onInput = _.debounce(onInput, 200);
     }
 
     return h(`input`, {
