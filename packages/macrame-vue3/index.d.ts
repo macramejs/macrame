@@ -73,6 +73,38 @@ export declare function useForm<
     R extends FormResource = FormResource
 >(options: UseFormOptions<M, R>): Form<M, R>;
 
+interface IndexMeta {
+    /**
+     * The current page.
+     */
+    current_page: number;
+
+    /**
+     * The index of the first item.
+     */
+    from: number;
+
+    /**
+     * The last page.
+     */
+    last_page: number;
+
+    /**
+     * The number of items per page.
+     */
+    per_page: number;
+
+    /**
+     * The indeix of the last item.
+     */
+    to: number;
+
+    /**
+     * The total number of available items.
+     */
+    total: number;
+}
+
 interface Index<
     M = Model,
     S extends string = string,
@@ -84,49 +116,14 @@ interface Index<
     items: M[];
 
     /**
+     * The index pagination information.
+     */
+    meta: IndexMeta;
+
+    /**
      * Determines whether new items are currently being loaded.
      */
     isBusy: boolean;
-
-    /**
-     * The number of items per page.
-     */
-    perPage: number;
-
-    /**
-     * Determines whether there is a next page.
-     */
-    hasNextPage: boolean;
-
-    /**
-     * Determines whether there is a previous page.
-     */
-    hasPrevPage: boolean;
-
-    /**
-     * The current page.
-     */
-    currentPage: number;
-
-    /**
-     * The last page.
-     */
-    lastPage: number;
-
-    /**
-     * The index of the first item.
-     */
-    fromItem: number;
-
-    /**
-     * The indeix of the last item.
-     */
-    toItem: number;
-
-    /**
-     * The total number of available items.
-     */
-    totalItems: number;
 
     /**
      * The search string.
