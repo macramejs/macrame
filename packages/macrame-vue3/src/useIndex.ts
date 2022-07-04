@@ -12,14 +12,7 @@ const useIndex: UseIndex = function useIndex({
     let index = reactive({
         isBusy: false,
         items: [],
-        totalItems: 0,
-        perPage: 0,
-        hasNextPage: false,
-        hasPrevPage: false,
-        currentPage: 1,
-        lastPage: 1,
-        fromItem: 0,
-        toItem: 0,
+        meta: {},
         search,
         filters,
         sortBy,
@@ -29,12 +22,7 @@ const useIndex: UseIndex = function useIndex({
             return load(this.__getParams())
                 .then(response => {
                     this.items = response.data.data;
-                    this.totalItems = response.data.total;
-                    this.perPage = response.data.per_page;
-                    this.currentPage = response.data.current_page;
-                    this.lastPage = response.data.last_page;
-                    this.fromItem = response.data.from;
-                    this.toItem = response.data.to;
+                    this.meta = response.data.meta;
                     this.hasNextPage = this.currentPage < this.lastPage;
                     this.hasPrevPage = this.currentPage > 1;
 
