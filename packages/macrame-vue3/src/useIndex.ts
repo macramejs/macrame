@@ -23,8 +23,6 @@ const useIndex: UseIndex = function useIndex({
                 .then(response => {
                     this.items = response.data.data;
                     this.meta = response.data.meta;
-                    this.hasNextPage = this.currentPage < this.lastPage;
-                    this.hasPrevPage = this.currentPage > 1;
 
                     return new Promise(() => response);
                 })
