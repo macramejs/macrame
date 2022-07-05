@@ -46,7 +46,7 @@ const useIndex: UseIndex = function useIndex({
                 this.filters[type] = undefined;
             }
 
-            this.reload();
+            this.load();
         },
         setPage(newPage) {
             if (this.newPage < 1 || this.newPage > this.lastPage) {
