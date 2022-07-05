@@ -1,6 +1,6 @@
 {
   "name": "@macramejs/macrame-vue3",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "",
   "main": "index.js",
   "module": "dist/macrame-vue3.esm-bundler.js",

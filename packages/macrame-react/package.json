@@ -1,6 +1,6 @@
 {
   "name": "@macramejs/macrame-react",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "",
   "source": "src/index.tsx",
   "main": "src/index.tsx",
