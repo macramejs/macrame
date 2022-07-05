@@ -32,6 +32,9 @@ const useIndex: UseIndex = function useIndex({
             watch(value, () => this.load());
         },
         setFilter(type, value) {
+            if (!this.filters[type]) {
+                this.filters[type] = {};
+            }
             this.filters[type].value = value;
             this.load();
         },
