@@ -304,10 +304,11 @@ interface TreeResource<M extends Model = Model> {
 
 export type Tree<
     M extends Model = Model,
-    R extends TreeResource<M> = TreeResource<M>
+    R extends TreeResource<M> = TreeResource<M>,
+    A extends any[] = []
 > = {
     items: TreeItem<M>[];
-    load(): Promise<AxiosResponse<R>>;
+    load(...args: A): Promise<AxiosResponse<R>>;
     onOrderChange: (handler: (order: TreeOrder) => void) => void;
     push: (item: M, children?: RawTreeItem[]) => void;
     pop: () => M | void;
@@ -335,21 +336,24 @@ export type RawTree<M = Model> = RawTreeItem<M>[];
 
 export type UseTreeOptions<
     M extends Model = Model,
-    R extends TreeResource<M> = TreeResource<M>
+    R extends TreeResource<M> = TreeResource<M>,
+    A extends any[] = []
 > = {
-    load?: () => Promise<AxiosResponse<R>>;
+    load?: (...args: A) => Promise<AxiosResponse<R>>;
     items?: RawTree<M>;
 };
 
 type UseTree<
     M extends Model = Model,
-    R extends TreeResource<M> = TreeResource<M>
-> = (options?: UseTreeOptions<M, R>) => Tree<M>;
+    R extends TreeResource<M> = TreeResource<M>,
+    A extends any[] = []
+> = (options?: UseTreeOptions<M, R, A>) => Tree<M, A>;
 
 export declare function useTree<
     M extends Model = Model,
-    R extends TreeResource<M> = TreeResource<M>
->(options?: UseTreeOptions<M, R>): Tree<M, R>;
+    R extends TreeResource<M> = TreeResource<M>,
+    A extends any[] = []
+>(options?: UseTreeOptions<M, R, A>): Tree<M, R, A>;
 
 type TInput = FunctionalComponent<Data>;
 export const Input: TInput;
