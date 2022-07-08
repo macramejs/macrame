@@ -19,7 +19,7 @@ function parseOrderRecursive(list: Tree) {
 const useTree: UseTree = ({ items = [], load = async () => {} }) => {
     const list = reactive({
         items: [],
-        isBusyLoading: false,
+        isLoading: false,
         __changeHandlers: [],
         onOrderChange(handler) {
             this.__changeHandlers.push(handler);
