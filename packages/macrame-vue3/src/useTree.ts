@@ -16,7 +16,7 @@ function parseOrderRecursive(list: Tree) {
     return order;
 }
 
-const useTree: UseTree = ({ items = [], load = async params => {} }) => {
+const useTree: UseTree = ({ items = [], load = async () => {} }) => {
     const list = reactive({
         items: [],
         isBusyLoading: false,
@@ -24,12 +24,13 @@ const useTree: UseTree = ({ items = [], load = async params => {} }) => {
         onOrderChange(handler) {
             this.__changeHandlers.push(handler);
         },
-        load(params) {
+        load() {
             if (!load) throw new Error('Missing load function for tree.');
 
             this.isBusyLoading = true;
 
-            return load(params)
+            return load
+                .apply(null, arguments)
                 .then(response => {
                     this.setItems(response.data.data);
                     this.isBusyLoading = false;
