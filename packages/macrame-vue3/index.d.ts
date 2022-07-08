@@ -308,6 +308,7 @@ export type Tree<
     A extends any[] = []
 > = {
     items: TreeItem<M>[];
+    isLoading: boolean;
     load(...args: A): Promise<AxiosResponse<R>>;
     onOrderChange: (handler: (order: TreeOrder) => void) => void;
     push: (item: M, children?: RawTreeItem[]) => void;
