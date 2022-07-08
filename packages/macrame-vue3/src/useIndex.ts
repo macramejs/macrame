@@ -10,23 +10,23 @@ const useIndex: UseIndex = function useIndex({
     const search = ref<string>('');
 
     let index = reactive({
-        isBusy: false,
+        isLoading: false,
         items: [],
         meta: {},
         search,
         filters,
         sortBy,
         async load() {
-            this.isBusy = true;
+            this.isLoading = true;
 
             return load(this.__getParams())
                 .then(response => {
                     this.items = response.data.data;
                     this.meta = response.data.meta;
 
-                    return new Promise(() => response);
+                    return response;
                 })
-                .finally(() => (this.isBusy = false));
+                .finally(() => (this.isLoading = false));
         },
         reloadOnChange(value) {
             watch(value, () => this.load());
