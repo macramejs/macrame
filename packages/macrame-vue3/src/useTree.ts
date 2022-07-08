@@ -27,14 +27,15 @@ const useTree: UseTree = ({ items = [], load = async () => {} }) => {
         load() {
             if (!load) throw new Error('Missing load function for tree.');
 
-            this.isBusyLoading = true;
+            this.isLoading = true;
 
             return load
                 .apply(null, arguments)
                 .then(response => {
                     this.setItems(response.data.data);
-                    this.isBusyLoading = false;
-                    return new Promise(() => response);
+                    this.isLoading = false;
+                
+                    return response;
                 })
                 .catch(e => {
                     this.isBusyLoading = false;
