@@ -123,7 +123,7 @@ interface Index<
     /**
      * Determines whether new items are currently being loaded.
      */
-    isBusy: boolean;
+    isLoading: boolean;
 
     /**
      * The search string.
