@@ -92,7 +92,7 @@ const useTree: UseTree = ({ items = [], load = async () => {} }) => {
 
             originalOrder.update(order);
 
-            if (list.isBusyLoading) return;
+            if (list.isLoading) return;
 
             for (let i = 0; i < list.__changeHandlers.length; i++) {
                 list.__changeHandlers[i](order);
