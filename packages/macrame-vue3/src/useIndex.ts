@@ -85,6 +85,7 @@ const useIndex: UseIndex = function useIndex({
         },
         addSortBy(key, direction = 'asc') {
             this.sortBy.push({ key, direction });
+
             this.load();
         },
         removeSortBy(key) {
@@ -101,11 +102,9 @@ const useIndex: UseIndex = function useIndex({
                 sortBy: [],
             };
 
-            for (let i = 0; i < this.sortBy; i++) {
-                params.sortBy.push(
-                    `${this.sortBy[i].key}.${this.sortBy[i].direction}`
-                );
-            }
+            this.sortBy.forEach(element => {
+                params.sortBy.push(`${element.key}.${element.direction}`);
+            });
 
             for (let key in this.filters) {
                 if (!this.filters[key]) {
