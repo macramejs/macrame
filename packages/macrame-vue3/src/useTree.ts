@@ -21,6 +21,7 @@ const useTree: UseTree = ({ items = [], load = async () => {} }) => {
         items: [],
         isLoading: false,
         __changeHandlers: [],
+        originalOrder: null,
         onOrderChange(handler) {
             this.__changeHandlers.push(handler);
         },
@@ -33,8 +34,9 @@ const useTree: UseTree = ({ items = [], load = async () => {} }) => {
                 .apply(null, arguments)
                 .then(response => {
                     this.setItems(response.data.data);
+                    this.originalOrder = useOriginal(list.getOrder());
                     this.isLoading = false;
-                
+
                     return response;
                 })
                 .catch(e => {
@@ -81,16 +83,19 @@ const useTree: UseTree = ({ items = [], load = async () => {} }) => {
         );
     };
 
-    const originalOrder = useOriginal(list.getOrder());
-
     watch(
         () => list,
         () => {
+            // skip when list is loading or initial order has not yet been set
+            if (list.isLoading || !list.originalOrder) {
+                return;
+            }
+
             const order = list.getOrder();
 
-            if (originalOrder.matches(order)) return;
+            if (list.originalOrder.matches(order)) return;
 
-            originalOrder.update(order);
+            list.originalOrder.update(order);
 
             if (list.isLoading) return;
 
