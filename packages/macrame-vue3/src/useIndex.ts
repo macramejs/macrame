@@ -80,7 +80,7 @@ const useIndex: UseIndex = function useIndex({
             for (let i = 0; i < this.sortBy.length; i++) {
                 let ordering = this.sortBy[i];
 
-                if (ordering && ordering.key != key) continue;
+                if (!ordering || ordering.key != key) continue;
 
                 return direction ? ordering.direction == direction : true;
             }
