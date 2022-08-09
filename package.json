@@ -3,7 +3,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "version": "0.3.21",
+  "version": "0.3.22",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build-vue3",

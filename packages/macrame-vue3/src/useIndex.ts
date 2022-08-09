@@ -94,7 +94,9 @@ const useIndex: UseIndex = function useIndex({
         },
         removeSortBy(key, reload = true) {
             const sorting = clone(this.sortBy);
+            console.log(sorting);
             for (let i = 0; i < sorting.length; i++) {
+                console.log(i, sorting);
                 if (sorting[i].key == key) delete this.sortBy[i];
             }
 
