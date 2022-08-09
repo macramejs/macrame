@@ -146,7 +146,7 @@ interface Index<
 
     // sorting
     addSortBy(key: S, direction?: 'desc' | 'asc'): void;
-    removeSortBy: (key: S) => void;
+    removeSortBy: (key: S, reload: boolean) => void;
     isSortedBy: (key: S, direction?: 'desc' | 'asc') => boolean;
 
     // paging
