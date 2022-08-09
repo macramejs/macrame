@@ -77,23 +77,28 @@ const useIndex: UseIndex = function useIndex({
             this.setPage(1);
         },
         isSortedBy(key, direction = null) {
-            if (!this.sortBy.includes(key)) return false;
-            if (!this.sortBy[key]) return false;
-            if (!direction) return true;
-
-            return this.sortBy[key] == direction;
+            for(let i = 0;i<this.sortBy.length;i++) {
+                let ordering = this.sortBy[i];
+                
+                if(ordering.key != key) continue;
+                
+                return direction 
+                    ? ordering.direction == direction 
+                    : true;
+            }
         },
         addSortBy(key, direction = 'asc') {
+            this.removeSortBy(key, false);
             this.sortBy.push({ key, direction });
 
             this.load();
         },
-        removeSortBy(key) {
+        removeSortBy(key, reload = true) {
             for (let i = 0; i < this.sortBy.length; i++) {
                 if (this.sortBy[i].key == key) delete this.sortBy[i];
             }
 
-            this.load();
+            if(reload) this.load();
         },
         __getParams() {
             let params = {
