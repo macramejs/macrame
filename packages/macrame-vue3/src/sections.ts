@@ -1,14 +1,14 @@
-import { 
-    defineComponent, 
-    ref, 
-    watch, 
-    PropType, 
-    Component as VueComponent, 
-    FunctionalComponent 
+import {
+    defineComponent,
+    ref,
+    watch,
+    PropType,
+    Component as VueComponent,
+    FunctionalComponent,
 } from 'vue';
 import Draggable from 'vuedraggable';
 import { TSection, Model, DragOptions } from './../index';
-import { v4 as uuid } from 'uuid';
+const uuid = require('uuid').v4;
 
 declare type TSections = {
     [k: string]: VueComponent | FunctionalComponent;
@@ -53,7 +53,7 @@ const Sections = defineComponent({
     template,
     components: { Draggable },
     emits: ['update:modelValue'],
-    props: { 
+    props: {
         modelValue: {
             type: Array as PropType<TSection[]>,
             required: true,
@@ -83,25 +83,25 @@ const Sections = defineComponent({
 
         const getSectionKey = (section: any): string => {
             const json = JSON.stringify(section);
-        
+
             for (let key in props.sections) {
                 if (JSON.stringify(props.sections[key]) == json) {
                     return key;
                 }
             }
-        
+
             return '';
         };
 
-        const removeElement = (element) => {
-            value.value = value.value.filter((section) => {
+        const removeElement = element => {
+            value.value = value.value.filter(section => {
                 return section.uuid != element.uuid;
             });
         };
 
         const parseValue = (value: TSection[]) => {
             let b = [];
-        
+
             for (let i in value) {
                 b.push({
                     uuid: uuid(),
@@ -110,30 +110,29 @@ const Sections = defineComponent({
                     component: props.sections[value[i].type as any],
                 });
             }
-        
+
             return b;
         };
 
         const defaultValue = (value, i) => {
-            let defaultValue = value[i].component.props.modelValue.default() ;
-            if(Object.keys(defaultValue).length < 1){
-                console.error('No default keys set in Section')
+            let defaultValue = value[i].component.props.modelValue.default();
+            if (Object.keys(defaultValue).length < 1) {
+                console.error('No default keys set in Section');
             }
 
             return defaultValue;
-        }
+        };
 
         const transformValue = (value: DraggableSection[]) => {
             let b: TSection[] = [];
-        
+
             for (let i in value) {
-                                
                 b.push({
                     type: getSectionKey(value[i].component),
                     value: value[i].value || defaultValue(value, i),
                 });
             }
-        
+
             return b;
         };
 
@@ -146,7 +145,7 @@ const Sections = defineComponent({
         );
 
         return { drag, updateElement, removeElement, getSectionKey, value };
-    }
+    },
 });
 
 export default Sections;

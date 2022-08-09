@@ -1,6 +1,6 @@
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue';
 import Draggable from 'vuedraggable';
-import { v4 as uuid } from 'uuid';
+const uuid = require('uuid').v4;
 
 const template = `
     <Draggable
@@ -25,7 +25,7 @@ const template = `
 const Cabinet = defineComponent({
     template,
     components: { Draggable },
-    props: { group: { type: String, default: 'sections'} },
+    props: { group: { type: String, default: 'sections' } },
     setup({}, { slots }) {
         const drawers = ref();
 
@@ -41,7 +41,7 @@ const Cabinet = defineComponent({
         });
 
         return { cloneSection, drawers };
-    }
+    },
 });
 
 export default Cabinet;
