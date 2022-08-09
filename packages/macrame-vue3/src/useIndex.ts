@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { ref, reactive, watch } from 'vue';
 import { UseIndex } from '../index';
+import { clone } from './useOriginal';
 
 const useIndex: UseIndex = function useIndex({
     load,
@@ -92,8 +93,9 @@ const useIndex: UseIndex = function useIndex({
             this.load();
         },
         removeSortBy(key, reload = true) {
-            for (let i = 0; i < this.sortBy.length; i++) {
-                if (this.sortBy[i].key == key) delete this.sortBy[i];
+            const sorting = clone(this.sortBy);
+            for (let i = 0; i < sorting.length; i++) {
+                if (sorting[i].key == key) delete this.sortBy[i];
             }
 
             if (reload) this.load();

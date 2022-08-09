@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { reactive } from 'vue';
 import { UseOriginal } from '../index';
 
-const clone = value => {
+export const clone = value => {
     return JSON.parse(JSON.stringify(value));
 };
 
