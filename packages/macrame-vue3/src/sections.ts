@@ -8,7 +8,7 @@ import {
 } from 'vue';
 import Draggable from 'vuedraggable';
 import { TSection, Model, DragOptions } from './../index';
-const uuid = require('uuid').v4;
+import { v4 as uuid } from 'uuid';
 
 declare type TSections = {
     [k: string]: VueComponent | FunctionalComponent;
