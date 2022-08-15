@@ -1,7 +1,6 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import Draggable from 'vuedraggable';
-import { v4 as uuid } from 'uuid';
-
+import { randomId } from './utils.ts';
 const template = `
     <Draggable
         v-model="drawers"
@@ -36,7 +35,7 @@ const Cabinet = defineComponent({
         });
 
         const cloneSection: any = (el: any) => ({
-            uuid: uuid(),
+            uuid: randomId(),
             component: el.props.draws,
         });
 

@@ -8,7 +8,7 @@ import {
 } from 'vue';
 import Draggable from 'vuedraggable';
 import { TSection, Model, DragOptions } from './../index';
-import { v4 as uuid } from 'uuid';
+import { randomId } from './utils.ts';
 
 declare type TSections = {
     [k: string]: VueComponent | FunctionalComponent;
@@ -104,7 +104,7 @@ const Sections = defineComponent({
 
             for (let i in value) {
                 b.push({
-                    uuid: uuid(),
+                    uuid: randomId(),
                     key: value[i].type,
                     value: value[i].value,
                     component: props.sections[value[i].type as any],

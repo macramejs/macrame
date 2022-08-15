@@ -1,7 +1,7 @@
 import { reactive, watch } from 'vue';
 import { UseTree, Model, Tree } from '../index';
 import { useOriginal } from './index';
-import { v4 as uuid } from 'uuid';
+import { randomId } from './utils.ts';
 
 function parseOrderRecursive(list: Tree) {
     let order = [];
@@ -59,7 +59,7 @@ const useTree: UseTree = ({ items = [], load = async () => {} }) => {
             for (let i = 0; i < list.length; i++) {
                 items.push({
                     children: useTree({ items: list[i].children }),
-                    uuid: uuid(),
+                    uuid: randomId(),
                     value: list[i].value,
                 });
             }
