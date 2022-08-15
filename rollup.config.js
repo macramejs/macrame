@@ -1,5 +1,4 @@
 import ts from 'rollup-plugin-typescript2';
-import commonjs from 'rollup-plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import path from 'path';
 
@@ -61,7 +60,6 @@ function createConfig(format, output, plugins = []) {
         input: resolve(entryFile),
         plugins: [
             tsPlugin, 
-            commonjs({ namedExports: { 'uuid': ['v4' ] }}),
             createReplacePlugin(isProductionBuild), 
             ...plugins
         ],
